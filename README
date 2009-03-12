@@ -1,0 +1,5 @@
+This directory contains an incomplete, pre-alpha Eclipse plugin that embeds the
+terminator terminal emulator in Eclipse.
+
+Report bugs to <matt@hillsdon.net>.
+

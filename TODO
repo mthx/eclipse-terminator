@@ -1,0 +1,16 @@
+== To be usable for me
+Initializing the termcap, or whatever I need to do to get Ctrl-D etc.
+Exiting from shell should close the view.
+Double spaced line weirdness.
+Resizing - at the moment it only gets bigger!  Annoying if you maximize then restore.
+
+== To be deployable
+Work out where we should log to.
+Figure out what to do with preferences.
+Packaging of jars/native code.
+Signal map.
+
+== Fun future features
+Multiple terminals
+Command-as-editor (e.g. vim).
+Eclipse based configuration?
