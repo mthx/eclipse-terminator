@@ -59,10 +59,11 @@ public class TerminatorView extends ViewPart implements TerminalPaneHost {
   }
 
   public void terminalNameChanged(JTerminalPane terminalPane) {
-    setPartName(terminalPane.getName());
+    updateFrameTitle();
   }
 
   public void updateFrameTitle() {
+    setPartName(_terminal.getName());
   }
 
   @Override
