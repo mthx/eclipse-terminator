@@ -6,6 +6,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
+import javax.swing.UIManager;
+
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 
@@ -21,6 +23,9 @@ public class TerminatorPlugin extends AbstractUIPlugin {
   @Override
   public void start(BundleContext context) throws Exception {
     super.start(context);
+    
+    UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+    
     // These are all rather dubious...
     System.setProperty("org.jessies.libraryDirectories", "/home/mth/devel/terminator/terminator/.generated/i386_Linux/lib/");
     System.setProperty("org.jessies.terminator.logDirectory", "/home/local/mth/tmp");
