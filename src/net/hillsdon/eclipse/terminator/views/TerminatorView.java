@@ -10,6 +10,8 @@ import org.eclipse.swt.events.FocusAdapter;
 import org.eclipse.swt.events.FocusEvent;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.ViewPart;
 
 import terminator.view.JTerminalPane;
@@ -30,7 +32,7 @@ public class TerminatorView extends ViewPart implements TerminalPaneHost {
   public void createPartControl(Composite parent) {
     parent.setLayout(new FillLayout());
 
-    _embedding = new Composite(parent, SWT.EMBEDDED);
+    _embedding = new Composite(parent, SWT.NO_BACKGROUND | SWT.EMBEDDED);
     final Frame frame = SWT_AWT.new_Frame(_embedding);
     // This is probably too strong but <tab> can't be our focus traversal
     // key else tab completion in the shell loses the focus.
@@ -70,6 +72,12 @@ public class TerminatorView extends ViewPart implements TerminalPaneHost {
 
   @Override
   public void closeTerminalPane(JTerminalPane terminalPane) {
+    Display.getDefault().asyncExec(new Runnable() {
+      @Override
+      public void run() {
+        PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().hideView(TerminatorView.this);
+      }
+    });
   }
 
   @Override
