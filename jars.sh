@@ -11,4 +11,6 @@ do
   cp $dir/lib/jars/* "$OUTPUT/lib/"
   cp $dir/.generated/i386_Linux/lib/*.so $OUTPUT
 done
+  
+cp ../terminator/.generated/terminfo/terminator src/net/hillsdon/eclipse/terminator/resources/terminfo
 
