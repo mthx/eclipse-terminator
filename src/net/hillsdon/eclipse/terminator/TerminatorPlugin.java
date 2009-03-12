@@ -24,7 +24,8 @@ public class TerminatorPlugin extends AbstractUIPlugin {
   public void start(BundleContext context) throws Exception {
     super.start(context);
     
-    UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+    // This seems to be unstable on Gtk.
+    //UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
     
     // These are all rather dubious...
     System.setProperty("org.jessies.libraryDirectories", "/home/mth/devel/terminator/terminator/.generated/i386_Linux/lib/");
