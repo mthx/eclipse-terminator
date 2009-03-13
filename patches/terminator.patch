@@ -1,0 +1,168 @@
+Index: src/terminator/TerminatorFrame.java
+===================================================================
+--- src/terminator/TerminatorFrame.java	(revision 1497)
++++ src/terminator/TerminatorFrame.java	(working copy)
+@@ -10,7 +10,7 @@
+ import javax.swing.Timer;
+ import terminator.view.*;
+ 
+-public class TerminatorFrame extends JFrame {
++public class TerminatorFrame extends JFrame implements TerminalPaneHost {
+ 	private Dimension terminalSize;
+ 	private TerminatorTabbedPane tabbedPane;
+ 	
+@@ -26,6 +26,7 @@
+ 		initFrame();
+ 		initFocus();
+ 		for (JTerminalPane terminal : terminals) {
++			terminal.setHost(this);
+ 			terminal.start();
+ 		}
+ 	}
+@@ -384,4 +385,13 @@
+ 		}
+ 		repaint();
+ 	}
++
++	public boolean isShowingMenu() {
++		return getJMenuBar() != null;
++	}
++
++	public boolean confirmClose(String processesUsingTty) {
++		return SimpleDialog.askQuestion(this, "Close Terminal?", "Closing this terminal may terminate the following processes: " + processesUsingTty, "Close");
++	}
++	
+ }
+Index: src/terminator/TerminatorTabbedPane.java
+===================================================================
+--- src/terminator/TerminatorTabbedPane.java	(revision 1497)
++++ src/terminator/TerminatorTabbedPane.java	(working copy)
+@@ -167,7 +167,7 @@
+                 EventQueue.invokeLater(new Runnable() {
+                     public void run() {
+                         selected.requestFocus();
+-                        selected.getTerminatorFrame().updateFrameTitle();
++                        selected.getHost().updateFrameTitle();
+                     }
+                 });
+             }
+Index: src/terminator/view/JTerminalPane.java
+===================================================================
+--- src/terminator/view/JTerminalPane.java	(revision 1497)
++++ src/terminator/view/JTerminalPane.java	(working copy)
+@@ -13,6 +13,7 @@
+ import terminator.terminal.*;
+ import terminator.view.highlight.*;
+ 
++
+ public class JTerminalPane extends JPanel {
+ 	// The probably over-simplified belief here is that Unix terminals always send ^?.
+ 	// Windows's ReadConsoleInput function always provides applications with ^H, so that's what they expect.
+@@ -21,6 +22,7 @@
+ 	// Search the change log for "backspace" for more information.
+ 	private static final String ERASE_STRING = String.valueOf(GuiUtilities.isWindows() ? Ascii.BS : Ascii.DEL);
+ 	
++	private TerminalPaneHost host;
+ 	private TerminalControl control;
+ 	private TerminalView view;
+ 	private JScrollPane scrollPane;
+@@ -231,7 +233,7 @@
+ 		if (size.equals(currentSizeInChars) == false) {
+ 			try {
+ 				control.sizeChanged(size, view.getVisibleSize());
+-				getTerminatorFrame().setTerminalSize(size);
++				host.setTerminalSize(size);
+ 			} catch (Exception ex) {
+ 				if (control != null) {
+ 					Log.warn("Failed to notify " + control.getPtyProcess() + " of size change", ex);
+@@ -274,7 +276,7 @@
+ 	
+ 	public void setName(String name) {
+ 		this.name = name;
+-		getTerminatorFrame().terminalNameChanged(this);
++		host.terminalNameChanged(this);
+ 	}
+ 	
+ 	public Dimension getOptimalViewSize() {
+@@ -354,8 +356,7 @@
+ 			
+ 			// Support keyboard equivalents when the user's been stupid enough to turn the menu off.
+ 			if (TerminatorMenuBar.isKeyboardEquivalent(event)) {
+-				JFrame frame = getTerminatorFrame();
+-				if (frame != null && frame.getJMenuBar() == null) {
++				if (!host.isShowingMenu()) {
+ 					handleKeyboardEquivalent(event);
+ 				}
+ 				return;
+@@ -577,20 +578,20 @@
+ 			final int keyCode = e.getKeyCode();
+ 			if (e.isControlDown() && keyCode == KeyEvent.VK_TAB) {
+ 				// Emulates Firefox's control-tab/control-shift-tab cycle-tab behavior.
+-				getTerminatorFrame().cycleTab(e.isShiftDown() ? -1 : 1);
++				host.cycleTab(e.isShiftDown() ? -1 : 1);
+ 				return true;
+ 			} else if (e.isControlDown() && e.isShiftDown() == false && (keyCode == KeyEvent.VK_PAGE_UP || keyCode == KeyEvent.VK_PAGE_DOWN)) {
+ 				// Emulates gnome-terminal and Firefox's control-page up/down cycle-tab behavior.
+ 				// Strictly, we're supposed to send an escape sequence for these strokes, but I don't know of anything that uses them.
+-				getTerminatorFrame().cycleTab(keyCode == KeyEvent.VK_PAGE_UP ? -1 : 1);
++				host.cycleTab(keyCode == KeyEvent.VK_PAGE_UP ? -1 : 1);
+ 				return true;
+ 			} else if (e.isControlDown() && e.isShiftDown() && (keyCode == KeyEvent.VK_PAGE_UP || keyCode == KeyEvent.VK_PAGE_DOWN)) {
+ 				// Emulates gnome-terminal's control-shift page up/page down move-tab behavior.
+-				getTerminatorFrame().moveCurrentTab(keyCode == KeyEvent.VK_PAGE_UP ? -1 : +1);
++				host.moveCurrentTab(keyCode == KeyEvent.VK_PAGE_UP ? -1 : +1);
+ 				return true;
+ 			} else if (e.isControlDown() && e.isShiftDown() && (keyCode == KeyEvent.VK_LEFT || keyCode == KeyEvent.VK_RIGHT)) {
+ 				// Emulates konsole's control-shift left/right move-tab behavior.
+-				getTerminatorFrame().moveCurrentTab(keyCode == KeyEvent.VK_LEFT ? -1 : +1);
++				host.moveCurrentTab(keyCode == KeyEvent.VK_LEFT ? -1 : +1);
+ 				return true;
+ 			} else if (TerminatorMenuBar.isKeyboardEquivalent(e)) {
+ 				// Emulates gnome-terminal's alt-<number> jump-to-tab behavior, or an analog of Terminal.app's command-<number> jump-to-window behavior.
+@@ -598,7 +599,7 @@
+ 				final char ch = (char) e.getKeyCode();
+ 				final int newIndex = TerminatorTabbedPane.keyCharToTabIndex(ch);
+ 				if (newIndex != -1) {
+-					getTerminatorFrame().setSelectedTabIndex(newIndex);
++					host.setSelectedTabIndex(newIndex);
+ 					return true;
+ 				}
+ 			}
+@@ -751,8 +752,7 @@
+ 			return true;
+ 		}
+ 
+-		boolean reallyClose = SimpleDialog.askQuestion(getTerminatorFrame(), "Close Terminal?", "Closing this terminal may terminate the following processes: " + processesUsingTty, "Close");
+-		return reallyClose;
++		return host.confirmClose(processesUsingTty);
+ 	}
+ 
+ 	/**
+@@ -770,17 +770,22 @@
+ 	public void doCloseAction() {
+ 		destroyProcess();
+ 		getLogWriter().close();
+-		getTerminatorFrame().closeTerminalPane(this);
++		host.closeTerminalPane(this);
+ 	}
+ 	
+-	public TerminatorFrame getTerminatorFrame() {
+-		return (TerminatorFrame) SwingUtilities.getAncestorOfClass(TerminatorFrame.class, this);
+-	}
+-	
+ 	/**
+ 	 * Implements visual bell.
+ 	 */
+ 	public void flash() {
+ 		viewport.flash();
+ 	}
++	
++	public void setHost(TerminalPaneHost host) {
++		this.host = host;
++	}
++
++	public TerminalPaneHost getHost() {
++		return host;
++	}
++	
+ }
