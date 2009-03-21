@@ -7,8 +7,8 @@
             category="org.eclipse.ui"
             class="net.hillsdon.eclipse.terminator.views.TerminatorView"
             icon="icons/terminator-16.png"
-            id="net.hillsdon.eclipse.terminator.views.TerminalView"
-            name="Terminal">
+            id="net.hillsdon.eclipse.terminator.views.TerminatorView"
+            name="Terminator">
       </view>
    </extension>
 

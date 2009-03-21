@@ -27,16 +27,22 @@ public class TerminatorPlugin extends AbstractUIPlugin {
     
     // This seems to be unstable on Gtk.
     //UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-    
-    // FIXME: Bundle the native code.
-    System.setProperty("org.jessies.libraryDirectories", "/home/mth/devel/terminator/terminator/.generated/i386_Linux/lib/");
-    
+
+    // Consider using another directory to avoid clash with the GNOME terminator?
     final File dotDir = new File(HOME_DIR, ".terminator");
     final  File logsDir = new File(dotDir, "logs");
+    final  File libsDir = new File(dotDir, "libs");
     dotDir.mkdir();
     // FIXME: Permissions?
     logsDir.mkdir();
+    libsDir.mkdir();
     
+    // FIXME: Linux only!
+    // FIXME: Make the library loading code more flexible so we can use
+    //        OSGI's Bundle-NativeCode
+    copyLibToLibsDir(libsDir, "libsalma-hayek.so");
+    copyLibToLibsDir(libsDir, "libpty.so");
+    System.setProperty("org.jessies.libraryDirectories", libsDir.toString());
     System.setProperty("org.jessies.terminator.logDirectory", logsDir.toString());
     System.setProperty("org.jessies.terminator.optionsFile", new File(dotDir, "options").toString());
     // OS specific? Install specific? Generated from the ruby in bin/terminator.
@@ -63,17 +69,35 @@ public class TerminatorPlugin extends AbstractUIPlugin {
       try {
         in = getClass().getResourceAsStream("resources/terminfo");
         out = new FileOutputStream(new File(directory, "terminator"));
-        // We don't depend on anything useful like commons-io.
-        byte[] buffer = new byte[2048];
-        int read;
-        while ((read = in.read(buffer)) != -1) {
-         out.write(buffer, 0, read); 
-        }
+        copy(in, out);
       }
       finally {
         FileUtilities.close(out);
         FileUtilities.close(in);
       }
+    }
+  }
+
+  private void copyLibToLibsDir(final File libDir, final String libName) throws IOException {
+    FileOutputStream out = new FileOutputStream(new File(libDir, libName));
+    InputStream in = getClass().getResourceAsStream("/" + libName);
+    try {
+      copy(in, out);
+    }
+    finally {
+      FileUtilities.close(out);
+      FileUtilities.close(in);
+    }
+  }
+
+  /**
+   * We don't depend on anything useful like commons-io.
+   */
+  private void copy(final InputStream in, final OutputStream out) throws IOException {
+    byte[] buffer = new byte[2048];
+    int read;
+    while ((read = in.read(buffer)) != -1) {
+     out.write(buffer, 0, read); 
     }
   }
 
