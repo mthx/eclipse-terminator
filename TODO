@@ -1,14 +1,17 @@
 == To be usable for me
-Initializing the termcap, or whatever I need to do to get Ctrl-D etc.
+Colors seem broken - irssi's highlighting of my nick is white on white!
 Exiting from shell should close the view.
-Double spaced line weirdness.
-Resizing - at the moment it only gets bigger!  Annoying if you maximize then restore.
+  - It does now, but with a logged stacktrace.
 
 == To be deployable
-Work out where we should log to.
-Figure out what to do with preferences.
 Packaging of jars/native code.
 Signal map.
+Remove context menu.
+
+== Annoyances
+Maximise loses focus from terminal.
+Fonts look ugly compared to gnome-terminal.
+"Monospace" font takes up too much vertical space.  Font looks fine in gnome-terminal. 
 
 == Fun future features
 Multiple terminals
