@@ -1,4 +1,4 @@
-package net.hillsdon.eclipse.terminator.views;
+package net.hillsdon.eclipse.terminator.view;
 
 import java.awt.Dimension;
 import java.awt.EventQueue;
