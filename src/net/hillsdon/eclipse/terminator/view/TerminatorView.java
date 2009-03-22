@@ -38,6 +38,7 @@ public class TerminatorView extends ViewPart implements TerminalPaneHost {
     // key else tab completion in the shell loses the focus.
     frame.setFocusTraversalKeysEnabled(false);
     _terminal = JTerminalPane.newShell();
+    _terminal.setPopupMenuEnabled(false);
     _terminal.setHost(this);
     frame.add(_terminal);
     _terminal.start();
