@@ -30,14 +30,13 @@ public class TerminatorPlugin extends AbstractUIPlugin {
   private static final Color NEAR_BLACK = new Color(0x181818);
   
   private static final String HOME_DIR = System.getProperty("user.home");
-  private File _dotDir;
+  private static final File DOT_DIR = new File(HOME_DIR, ".terminator");
 
   @Override
   public void start(final BundleContext context) throws Exception {
     super.start(context);
 
-    _dotDir = new File(HOME_DIR, ".terminator");
-    _dotDir.mkdir();
+    DOT_DIR.mkdir();
     
     initializeNativeLibraries();
     initializeLogging();
@@ -75,7 +74,7 @@ public class TerminatorPlugin extends AbstractUIPlugin {
    *  Make the library loading code more flexible so we can use OSGI's Bundle-NativeCode.
    */
   private void initializeNativeLibraries() throws IOException {
-    final File libsDir = new File(_dotDir, "libs");
+    final File libsDir = new File(DOT_DIR, "libs");
     libsDir.mkdir();
     System.setProperty("org.jessies.libraryDirectories", libsDir.toString());
     copyLibToLibsDir(libsDir, "libsalma-hayek.so");
@@ -89,7 +88,7 @@ public class TerminatorPlugin extends AbstractUIPlugin {
    *  Does terminator ever clean up these files?
    */
   private void initializeLogging() {
-    final File logsDir = new File(_dotDir, "logs");
+    final File logsDir = new File(DOT_DIR, "logs");
     logsDir.mkdir();
     System.setProperty("org.jessies.terminator.logDirectory", logsDir.toString());
 
@@ -103,7 +102,7 @@ public class TerminatorPlugin extends AbstractUIPlugin {
   }
 
   private void initializePreferences() {
-    final File optionsFile = new File(_dotDir, "options");
+    final File optionsFile = new File(DOT_DIR, "options");
     System.setProperty("org.jessies.terminator.optionsFile", optionsFile.toString());
     TerminatorPreferences preferences = Terminator.getPreferences();
     // Change the default color scheme to one that fits in better within the workspace.
