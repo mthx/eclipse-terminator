@@ -1,5 +1,6 @@
-== To be deployable
+== To be deployable (Linux only)
 Remove context menu.
+Setting the window title doesn't seem to work in Eclipse.
 Fix logging so it doesn't go to stdout.
 Keyboard shortcut to focus the view.
 Make black on white mode the default - blue is too bold for inside Eclipse.
@@ -12,6 +13,7 @@ Colors seem broken in black on white mode - irssi's highlighting of my nick is w
 Maximise loses focus from terminal.
 Fonts look ugly compared to gnome-terminal.
 "Monospace" font takes up too much vertical space.  Font looks fine in gnome-terminal. 
+Partial text at the top - see Stuart Bell's suggestion in terminator TODO.
 
 == Future
 Fail well on non-Linux.
