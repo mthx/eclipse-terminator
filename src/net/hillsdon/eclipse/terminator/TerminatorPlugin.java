@@ -28,7 +28,7 @@ public class TerminatorPlugin extends AbstractUIPlugin {
   private static final String HOME_DIR = System.getProperty("user.home");
 
   @Override
-  public void start(BundleContext context) throws Exception {
+  public void start(final BundleContext context) throws Exception {
     super.start(context);
     
     // This seems to be unstable on Gtk.
@@ -78,7 +78,7 @@ public class TerminatorPlugin extends AbstractUIPlugin {
     Terminator.getSharedInstance().optionsDidChange();
   }
   
-  private void installTermInfoIn(File directory) throws IOException {
+  private void installTermInfoIn(final File directory) throws IOException {
     if (directory.exists() || directory.mkdirs()) {
       InputStream in = null;
       OutputStream out = null;
