@@ -6,5 +6,13 @@ with the patches in 'patches' applied.  Then run ./jars.sh to build them and
 copy the relevant artifacts into the Eclipse plugin source tree.  For now the
 plugin may only be built from within Eclipse.
 
+The terminator and salma-hayek projects are available at
+
+http://software.jessies.org
+
+This Eclipse plugin is available from SVN at
+
+http://matt.hillsdon.net/svn/eclipse/terminator/trunk/
+
 Report bugs to <matt@hillsdon.net>.
 
