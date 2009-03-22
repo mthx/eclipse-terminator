@@ -15,7 +15,11 @@ import terminator.TerminatorPreferences;
 import e.util.FileUtilities;
 
 /**
- * The plugin initializes various static terminator settings.
+ * The plugin initializes various files and static terminator settings.
+ * 
+ * Much of this corresponds to the ruby in Terminator's bin/terminator.
+ * 
+ * We don't try to support anything other than Linux at the moment.
  * 
  * @author mth
  */
@@ -26,47 +30,81 @@ public class TerminatorPlugin extends AbstractUIPlugin {
   private static final Color NEAR_BLACK = new Color(0x181818);
   
   private static final String HOME_DIR = System.getProperty("user.home");
+  private File _dotDir;
 
   @Override
   public void start(final BundleContext context) throws Exception {
     super.start(context);
-    
-    // This seems to be unstable on Gtk.
-    //UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 
-    // Consider using another directory to avoid clash with the GNOME terminator?
-    final File dotDir = new File(HOME_DIR, ".terminator");
-    final File logsDir = new File(dotDir, "logs");
-    final File libsDir = new File(dotDir, "libs");
-    final File optionsFile = new File(dotDir, "options");
-    dotDir.mkdir();
-    // FIXME: Permissions?
-    logsDir.mkdir();
-    libsDir.mkdir();
+    _dotDir = new File(HOME_DIR, ".terminator");
+    _dotDir.mkdir();
     
-    // FIXME: Linux only!
-    // FIXME: Make the library loading code more flexible so we can use
-    //        OSGI's Bundle-NativeCode
-    copyLibToLibsDir(libsDir, "libsalma-hayek.so");
-    copyLibToLibsDir(libsDir, "libpty.so");
-    System.setProperty("org.jessies.libraryDirectories", libsDir.toString());
-    System.setProperty("org.jessies.terminator.logDirectory", logsDir.toString());
-    System.setProperty("org.jessies.terminator.optionsFile", optionsFile.toString());
-    // OS specific? Install specific? Generated from the ruby in bin/terminator.
+    initializeNativeLibraries();
+    initializeLogging();
+    initializeSignalMap();
+    initializeTermInfo();
+    initializePreferences();
+  }
+
+  /**
+   * Issues:
+   *  OS specific? Install specific? Generated from the ruby in bin/terminator.
+   */
+  private void initializeSignalMap() {
     System.setProperty("org.jessies.terminator.signalMap", "29:POLL30:PWR7:BUS11:SEGV9:KILL31:SYS15:TERM6:IOT1:HUP19:STOP5:TRAP2:INT27:PROF24:XCPU17:CLD13:PIPE8:FPE26:VTALRM29:IO28:WINCH21:TTIN20:TSTP6:ABRT22:TTOU3:QUIT10:USR117:CHLD18:CONT4:ILL12:USR225:XFSZ23:URG14:ALRM0:EXIT");
-    
-    // Install the terminfo.  See bin/terminator.
+  }
+
+  /**
+   * Issues:
+   *  The "74" is not needed unless we support Mac.
+   *  Perhaps it would be better to not overwrite?
+   */
+  private void initializeTermInfo() throws IOException {
     String termInfoDirName = System.getenv("TERMINFO");
     if (termInfoDirName == null) {
       termInfoDirName = HOME_DIR + File.separatorChar + ".terminfo";
     }
-    File termInfoDir = new File(termInfoDirName);
+    final File termInfoDir = new File(termInfoDirName);
     installTermInfoIn(new File(termInfoDir, "t"));
     installTermInfoIn(new File(termInfoDir, "74"));
-    initializePreferences();
+  }
+
+  /**
+   * Issues:
+   *  Linux only.
+   *  Make the library loading code more flexible so we can use OSGI's Bundle-NativeCode.
+   */
+  private void initializeNativeLibraries() throws IOException {
+    final File libsDir = new File(_dotDir, "libs");
+    libsDir.mkdir();
+    System.setProperty("org.jessies.libraryDirectories", libsDir.toString());
+    copyLibToLibsDir(libsDir, "libsalma-hayek.so");
+    copyLibToLibsDir(libsDir, "libpty.so");
+  }
+
+  /**
+   * Issues:
+   *  We can't get at the pid from here so names don't match (do we care?)
+   *  We should probably use the Eclipse error log for things that are likely bugs.
+   *  Does terminator ever clean up these files?
+   */
+  private void initializeLogging() {
+    final File logsDir = new File(_dotDir, "logs");
+    logsDir.mkdir();
+    System.setProperty("org.jessies.terminator.logDirectory", logsDir.toString());
+
+    try {
+      final File logFile = File.createTempFile("terminator-", ".log", logsDir);
+      System.setProperty("e.util.Log.filename", logFile.toString());
+    }
+    catch (IOException ex) {
+      // It'll end up on the console then.
+    }
   }
 
   private void initializePreferences() {
+    final File optionsFile = new File(_dotDir, "options");
+    System.setProperty("org.jessies.terminator.optionsFile", optionsFile.toString());
     TerminatorPreferences preferences = Terminator.getPreferences();
     // Change the default color scheme to one that fits in better within the workspace.
     preferences.put(TerminatorPreferences.BACKGROUND_COLOR, Color.WHITE);
