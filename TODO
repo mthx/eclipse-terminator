@@ -1,23 +1,22 @@
-== To be usable for me
+== To be deployable
+Remove context menu.
 Fix logging so it doesn't go to stdout.
 Keyboard shortcut to focus the view.
-Colors seem broken in black on white mode - irssi's highlighting of my nick is white on white!
 Make black on white mode the default - blue is too bold for inside Eclipse.
 Exiting from shell should close the view.
   - It does now, but with a logged stacktrace.
-
-== To be deployable
-Packaging of jars/native code.
-Signal map.
-Remove context menu.
+Signal map is OS specific?  Is the current one good for all Linux machines?
 
 == Annoyances
+Colors seem broken in black on white mode - irssi's highlighting of my nick is white on white!
 Maximise loses focus from terminal.
 Fonts look ugly compared to gnome-terminal.
 "Monospace" font takes up too much vertical space.  Font looks fine in gnome-terminal. 
 
-== Fun future features
+== Future
+Fail well on non-Linux.
+(later) Cross platform support
+Eclipse based preferences
 Multiple terminals
 Command-as-editor (e.g. vim).
-Eclipse based configuration?
 
