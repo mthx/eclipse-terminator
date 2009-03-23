@@ -3,6 +3,7 @@ There's probably a whole load of things I've not thought of yet
 == To be deployable (Linux only)
 Tidy up changes to terminator, remove/indirect references in JTerminalPane to
 bits of terminator we don't/shouldn't use (frames, shared app. instance).
+Fix permissions on log directory/files.
 Keyboard shortcut to open or focus the view.
 Signal map is OS specific?  Is the current one good for all Linux machines?
 
