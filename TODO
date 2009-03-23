@@ -4,6 +4,8 @@ There's probably a whole load of things I've not thought of yet but here goes.
 - Tidy up changes to terminator, remove/indirect references in JTerminalPane to
   bits of terminator we don't/shouldn't use (frames, shared app. instance).
 - Keyboard shortcut to open or focus the view.
+- Ctrl-PageUp/Down must not be eated by the terminal, they're needed to switch
+  views in Eclipse.
 - Vim changes view title but bash doesn't.  Are the escapes terminal (xterm?)
   specific?  What's the best place to try to fix this?  At least a FAQ entry
   with some bash that switches on TERM to set PS1 is required.
@@ -20,8 +22,6 @@ There's probably a whole load of things I've not thought of yet but here goes.
 - Stacktrace in log on close.
 
 == Future
-- Multiple terminals - perhaps similar to the Console view which permits N in 1
-  and multiple views.  Not having this is actually pretty annoying.
 - Eclipse based context menu.
 - Eclipse based preferences
 - Fail well on non-Linux and/or cross platform support (later).
