@@ -1,28 +1,29 @@
-There's probably a whole load of things I've not thought of yet
+There's probably a whole load of things I've not thought of yet but here goes.
 
 == To be deployable (Linux only)
-Tidy up changes to terminator, remove/indirect references in JTerminalPane to
-bits of terminator we don't/shouldn't use (frames, shared app. instance).
-Fix permissions on log directory/files.
-Keyboard shortcut to open or focus the view.
-Signal map is OS specific?  Is the current one good for all Linux machines?
+- Tidy up changes to terminator, remove/indirect references in JTerminalPane to
+  bits of terminator we don't/shouldn't use (frames, shared app. instance).
+- Keyboard shortcut to open or focus the view.
+- Vim changes view title but bash doesn't.  Are the escapes terminal (xterm?)
+  specific?  What's the best place to try to fix this?  At least a FAQ entry
+  with some bash that switches on TERM to set PS1 is required.
 
 == Annoyances
-Setting the window (well, ViewPart) title doesn't seem to work in Eclipse.
-GTK LAF seems to be unstable.
-Colors seem broken in black on white mode - irssi's highlighting of my nick is white on white!
-Maximise loses focus from terminal.
-Fonts look ugly compared to gnome-terminal.
-"Monospace" font takes up too much vertical space.  Font looks fine in gnome-terminal. 
-Partial text at the top - see Stuart Bell's suggestion in terminator TODO.
-Stacktrace in log on close.
+- If using as fast view (?) then restore doesn't redraw.
+- GTK LAF seems to be unstable.
+- Colors seem broken in black on white mode - irssi's highlighting of my nick
+  is white on white!  There's also screen(1) in the mix there though.
+- Maximise loses focus from terminal.
+- Fonts look ugly compared to gnome-terminal.
+- "Monospace" font takes up too much vertical space when running with open-jdk.
+- Partial text at the top - see Stuart Bell's suggestion in terminator TODO.
+- Stacktrace in log on close.
 
 == Future
-Eclipse based context menu.
-Eclipse based preferences
-Fail well on non-Linux.
-(later) Cross platform support
-Multiple terminals - perhaps similar to the Console view which permits N in 1
-and multiple views.
-Command-as-editor (e.g. vim).
+- Multiple terminals - perhaps similar to the Console view which permits N in 1
+  and multiple views.  Not having this is actually pretty annoying.
+- Eclipse based context menu.
+- Eclipse based preferences
+- Fail well on non-Linux and/or cross platform support (later).
+- Command-as-editor (e.g. vim).  Hard to fit with the editor lifecycle though.
 

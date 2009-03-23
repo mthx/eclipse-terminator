@@ -45,12 +45,10 @@ public class TerminatorPlugin extends AbstractUIPlugin {
     initializePreferences();
   }
 
-  /**
-   * Issues:
-   *  OS specific? Install specific? Generated from the ruby in bin/terminator.
-   */
   private void initializeSignalMap() {
-    System.setProperty("org.jessies.terminator.signalMap", "29:POLL30:PWR7:BUS11:SEGV9:KILL31:SYS15:TERM6:IOT1:HUP19:STOP5:TRAP2:INT27:PROF24:XCPU17:CLD13:PIPE8:FPE26:VTALRM29:IO28:WINCH21:TTIN20:TSTP6:ABRT22:TTOU3:QUIT10:USR117:CHLD18:CONT4:ILL12:USR225:XFSZ23:URG14:ALRM0:EXIT");
+    // This is not possible to get right from Java.  See the ruby in bin/terminator.
+    // Only used to improve reporting of received signals, "" is fine (unset -> NPE).
+    System.setProperty("org.jessies.terminator.signalMap", "");
   }
 
   /**
@@ -74,8 +72,7 @@ public class TerminatorPlugin extends AbstractUIPlugin {
    *  Make the library loading code more flexible so we can use OSGI's Bundle-NativeCode.
    */
   private void initializeNativeLibraries() throws IOException {
-    final File libsDir = new File(DOT_DIR, "libs");
-    libsDir.mkdir();
+    final File libsDir = createDotSubDirectory("libs", true);
     System.setProperty("org.jessies.libraryDirectories", libsDir.toString());
     copyLibToLibsDir(libsDir, "libsalma-hayek.so");
     copyLibToLibsDir(libsDir, "libpty.so");
@@ -88,17 +85,38 @@ public class TerminatorPlugin extends AbstractUIPlugin {
    *  Does terminator ever clean up these files?
    */
   private void initializeLogging() {
-    final File logsDir = new File(DOT_DIR, "logs");
-    logsDir.mkdir();
-    System.setProperty("org.jessies.terminator.logDirectory", logsDir.toString());
-
     try {
+      final File logsDir = createDotSubDirectory("logs", true);
+      System.setProperty("org.jessies.terminator.logDirectory", logsDir.toString());
       final File logFile = File.createTempFile("terminator-", ".log", logsDir);
       System.setProperty("e.util.Log.filename", logFile.toString());
     }
     catch (IOException ex) {
       // It'll end up on the console then.
     }
+  }
+  
+  private File createDotSubDirectory(final String name, final boolean secure) throws IOException {
+    final File dir = new File(DOT_DIR, name);
+    if (!dir.exists()) {
+      if (!dir.mkdir()) {
+        throw new IOException("Failed to create " + dir);
+      }
+    }
+    if (secure) {
+      chmod700(dir);
+    }
+    return dir;
+  }
+
+  private void chmod700(final File file) {
+    // Is this for real?  Note we don't check errors for now.
+    file.setExecutable(false, false);
+    file.setReadable(false, false);
+    file.setWritable(false, false);
+    file.setExecutable(true, true);
+    file.setReadable(true, true);
+    file.setWritable(true, true);
   }
 
   private void initializePreferences() {

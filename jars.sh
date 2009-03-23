@@ -8,7 +8,9 @@ do
   pushd "$dir/.generated/classes"
   jar cf "$OUTPUT/lib/`basename $dir`.jar" *
   popd
-  cp $dir/lib/jars/* "$OUTPUT/lib/"
+  if [[ -d $dir/lib/jars ]]; then
+    cp $dir/lib/jars/* "$OUTPUT/lib/"
+  fi
   cp $dir/.generated/i386_Linux/lib/*.so $OUTPUT/src/
 done
   
