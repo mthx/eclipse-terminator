@@ -1,4 +1,9 @@
-#Thu Mar 12 20:54:47 GMT 2009
+#Mon Mar 23 22:22:17 GMT 2009
 eclipse.preferences.version=1
 formatter_profile=_DSL
 formatter_settings_version=11
+org.eclipse.jdt.ui.exception.name=e
+org.eclipse.jdt.ui.gettersetter.use.is=true
+org.eclipse.jdt.ui.keywordthis=false
+org.eclipse.jdt.ui.overrideannotation=true
+org.eclipse.jdt.ui.text.custom_code_templates=<?xml version\="1.0" encoding\="UTF-8" standalone\="no"?><templates/>
