@@ -1,6 +1,8 @@
 package net.hillsdon.eclipse.terminator.view;
 
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.ui.IViewSite;
+import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.part.ViewPart;
 
 import terminator.view.JTerminalPane;
@@ -12,8 +14,16 @@ import terminator.view.JTerminalPane;
  */
 public class TerminatorView extends ViewPart {
 
+  public static final String ID = "net.hillsdon.eclipse.terminator.view.TerminatorView";
+  
   private TerminatorEmbedding _embedding;
 
+  @Override
+  public void init(final IViewSite site) throws PartInitException {
+    super.init(site);
+    site.getActionBars().getToolBarManager().add(new OpenTerminatorAction());
+  }
+  
   @Override
   public void createPartControl(final Composite parent) {
     final JTerminalPane terminalPane = JTerminalPane.newShell();

@@ -24,6 +24,8 @@ import e.util.FileUtilities;
  * @author mth
  */
 public class TerminatorPlugin extends AbstractUIPlugin {
+  
+  public static final String ID = "net.hillsdon.eclipse.terminator";
 
   // Copied from TerminatorPrefererences.  Perhaps we should model 'ColorScheme' explicitly.
   private static final Color LIGHT_BLUE = new Color(0xb3d4ff);
