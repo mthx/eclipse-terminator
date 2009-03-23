@@ -11,6 +11,7 @@ import org.eclipse.swt.events.FocusEvent;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.ViewPart;
 
@@ -25,13 +26,14 @@ import terminator.view.TerminalPaneHost;
 public class TerminatorView extends ViewPart implements TerminalPaneHost {
 
   private JTerminalPane _terminal;
-
+  private Display _display;
   private Composite _embedding;
 
   @Override
   public void createPartControl(Composite parent) {
     parent.setLayout(new FillLayout());
 
+    _display = parent.getDisplay();
     _embedding = new Composite(parent, SWT.NO_BACKGROUND | SWT.EMBEDDED);
     final Frame frame = SWT_AWT.new_Frame(_embedding);
     // This is probably too strong but <tab> can't be our focus traversal
@@ -45,7 +47,7 @@ public class TerminatorView extends ViewPart implements TerminalPaneHost {
 
     _embedding.addFocusListener(new FocusAdapter() {
       public void focusGained(FocusEvent e) {
-        EventQueue.invokeLater(new Runnable() {
+        runSwingFromSWT(new Runnable() {
           public void run() {
             _terminal.requestFocus();
           }
@@ -56,7 +58,12 @@ public class TerminatorView extends ViewPart implements TerminalPaneHost {
 
   @Override
   public void dispose() {
-    _terminal.doCloseAction();
+    runSwingFromSWT(new Runnable() {
+      @Override
+      public void run() {
+        _terminal.doCloseAction();
+      }
+    });
   }
 
   public void terminalNameChanged(JTerminalPane terminalPane) {
@@ -64,7 +71,11 @@ public class TerminatorView extends ViewPart implements TerminalPaneHost {
   }
 
   public void updateFrameTitle() {
-    setPartName(_terminal.getName());
+    runSWTFromSwing(new Runnable() {
+      public void run() {
+        setPartName(_terminal.getName());
+      }
+    });
   }
 
   @Override
@@ -74,10 +85,12 @@ public class TerminatorView extends ViewPart implements TerminalPaneHost {
 
   @Override
   public void closeTerminalPane(JTerminalPane terminalPane) {
-    Display.getDefault().asyncExec(new Runnable() {
-      @Override
+    runSWTFromSwing(new Runnable() {
       public void run() {
-        PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().hideView(TerminatorView.this);
+        IWorkbenchPage activePage = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
+        if (activePage.isPartVisible(TerminatorView.this)) {
+          activePage.hideView(TerminatorView.this);
+        }
       }
     });
   }
@@ -103,4 +116,24 @@ public class TerminatorView extends ViewPart implements TerminalPaneHost {
   public void setTerminalSize(Dimension size) {
   }
 
+  private void runSWTFromSwing(final Runnable runnable) {
+    _display.asyncExec(new Runnable() {
+      public void run() {
+        if (!_embedding.isDisposed()) {
+          runnable.run();
+        }
+      }
+    });
+  }
+  
+  private void runSwingFromSWT(final Runnable runnable) {
+    EventQueue.invokeLater(new Runnable() {
+      public void run() {
+        if (_terminal.isVisible() /* Correct check? */) {
+          runnable.run();
+        }
+      }
+    });
+  }
+  
 }
