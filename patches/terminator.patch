@@ -249,3 +249,32 @@ Index: src/terminator/view/JTerminalPane.java
 +	}
 +	
  }
+Index: src/terminator/view/TerminalPaneHost.java
+===================================================================
+--- src/terminator/view/TerminalPaneHost.java	(revision 0)
++++ src/terminator/view/TerminalPaneHost.java	(revision 0)
+@@ -0,0 +1,24 @@
++package terminator.view;
++
++import java.awt.Dimension;
++
++/**
++ * Contains JTerminatorPanes and provides their host environment.
++ * 
++ * Not tied to the rest of Terminator to facilitate embedding.
++ * 
++ * @author mth
++ */
++public interface TerminalPaneHost {
++
++	void cycleTab(int delta);
++	void moveCurrentTab(int direction);
++	void setSelectedTabIndex(int index);
++	boolean isShowingMenu();
++	boolean confirmClose(String processesUsingTty);
++	void closeTerminalPane(JTerminalPane terminalPane);
++	void updateFrameTitle();
++	void terminalNameChanged(JTerminalPane terminalPane);
++	void setTerminalSize(Dimension size);
++
++}
