@@ -4,17 +4,16 @@ There's probably a whole load of things I've not thought of yet but here goes.
 - Tidy up changes to terminator, remove/indirect references in JTerminalPane to
   bits of terminator we don't/shouldn't use (frames, shared app. instance).
 - Keyboard shortcut to open or focus the view.
-- Ctrl-PageUp/Down must not be eated by the terminal, they're needed to switch
-  views in Eclipse.
-- Vim changes view title but bash doesn't.  Are the escapes terminal (xterm?)
-  specific?  What's the best place to try to fix this?  At least a FAQ entry
-  with some bash that switches on TERM to set PS1 is required.
+- Ctrl-PageUp/Down must not be eaten by the terminal, they're needed to switch
+  views in Eclipse.  These seem to actually be eaten by the Swing scrollbars.
+- Ask whether using the Terminator name and icon is reasonable.
 
 == Annoyances
+- Would be nice if Ctrl-W didn't close the active editor in Eclipse when
+  the terminator view is focused.  This makes :split windows in vim
+  pretty much unusable.
 - If using as fast view (?) then restore doesn't redraw.
 - GTK LAF seems to be unstable.
-- Colors seem broken in black on white mode - irssi's highlighting of my nick
-  is white on white!  There's also screen(1) in the mix there though.
 - Maximise loses focus from terminal.
 - Fonts look ugly compared to gnome-terminal.
 - "Monospace" font takes up too much vertical space when running with open-jdk.
@@ -23,7 +22,11 @@ There's probably a whole load of things I've not thought of yet but here goes.
 
 == Future
 - Eclipse based context menu.
-- Eclipse based preferences
+- Eclipse based preferences.
+- Open shell for current directory for Eclipse selection.
 - Fail well on non-Linux and/or cross platform support (later).
 - Command-as-editor (e.g. vim).  Hard to fit with the editor lifecycle though.
+- Hyperlink support as in gnome-terminal.
+- Foreground background color munging as in gnome-terminal, e.g. makes white
+  on white viewable by darkening the foreground.
 

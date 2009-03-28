@@ -1,0 +1,22 @@
+For general FAQs about the terminal emulation rather than the Eclipse
+integration see
+
+http://software.jessies.org/terminator/faq.html
+
+1. View title isn't working or only works in some applications (e.g. vim).
+
+You'll need to teach your bash start-up scripts about the 'terminator' terminal
+type.  E.g. on Ubuntu edit ~/.bashrc and add '|terminator' (no quotes) to the
+block below after 'rxvt*'.
+
+ # If this is an xterm set the title to user@host:dir
+ case "$TERM" in
+ xterm*|rxvt*)
+     PROMPT_COMMAND='echo -ne "\033]0;${USER}@${HOSTNAME}: ${PWD/$HOME/~}\007"'
+     ;;
+ *)
+     ;;
+ esac
+
+See also jessies.org FAQ entry.
+
