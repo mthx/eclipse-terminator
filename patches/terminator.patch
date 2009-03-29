@@ -63,19 +63,6 @@ Index: src/terminator/TerminatorFrame.java
 +	}
 +	
  }
-Index: src/terminator/Terminator.java
-===================================================================
---- src/terminator/Terminator.java	(revision 1497)
-+++ src/terminator/Terminator.java	(working copy)
-@@ -188,7 +188,7 @@
- 	/**
- 	 * Invoked (via our Preferences.Listener, above) by the preferences dialog whenever an option is changed.
- 	 */
--	private void optionsDidChange() {
-+	public void optionsDidChange() {
- 		updateBoldForegroundColor();
- 		
- 		// On the Mac, the Command key (called 'meta' by Java) is always used for keyboard equivalents.
 Index: src/terminator/TerminatorTabbedPane.java
 ===================================================================
 --- src/terminator/TerminatorTabbedPane.java	(revision 1497)

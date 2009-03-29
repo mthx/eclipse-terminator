@@ -130,9 +130,6 @@ public class TerminatorPlugin extends AbstractUIPlugin {
     preferences.put(TerminatorPreferences.FOREGROUND_COLOR, NEAR_BLACK);
     preferences.put(TerminatorPreferences.CURSOR_COLOR, Color.BLUE);
     preferences.put(TerminatorPreferences.SELECTION_COLOR, LIGHT_BLUE);
-    preferences.readFromDisk();
-    // Initialize the preferences.  Without this Ctrl-L/D etc don't work.
-    Terminator.getSharedInstance().optionsDidChange();
   }
   
   private void installTermInfoIn(final File directory) throws IOException {
