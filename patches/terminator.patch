@@ -141,18 +141,7 @@ Index: src/terminator/view/JTerminalPane.java
  	
  	/**
  	 * Creates a new terminal with the given name, running the given command.
-@@ -120,6 +102,10 @@
- 		validate();
- 	}
- 	
-+	public void setActions(TerminalPaneActions actions) {
-+		this.actions = actions;
-+	}
-+	
- 	private void init(List<String> command, String workingDirectory) {
- 		view = new TerminalView();
- 		view.addKeyListener(new KeyHandler());
-@@ -127,7 +113,12 @@
+@@ -127,7 +109,12 @@
  		initOutputSpinner();
  		
  		EPopupMenu popupMenu = new EPopupMenu(view);
@@ -166,7 +155,7 @@ Index: src/terminator/view/JTerminalPane.java
  		
  		viewport = new VisualBellViewport();
  		viewport.setView(view);
-@@ -231,7 +222,7 @@
+@@ -231,7 +218,7 @@
  		if (size.equals(currentSizeInChars) == false) {
  			try {
  				control.sizeChanged(size, view.getVisibleSize());
@@ -175,7 +164,7 @@ Index: src/terminator/view/JTerminalPane.java
  			} catch (Exception ex) {
  				if (control != null) {
  					Log.warn("Failed to notify " + control.getPtyProcess() + " of size change", ex);
-@@ -245,8 +236,14 @@
+@@ -245,8 +232,14 @@
  		return view;
  	}
  	
@@ -192,7 +181,7 @@ Index: src/terminator/view/JTerminalPane.java
  		control.start();
  	}
  	
-@@ -274,7 +271,7 @@
+@@ -274,7 +267,7 @@
  	
  	public void setName(String name) {
  		this.name = name;
@@ -201,7 +190,7 @@ Index: src/terminator/view/JTerminalPane.java
  	}
  	
  	public Dimension getOptimalViewSize() {
-@@ -326,26 +323,6 @@
+@@ -326,26 +319,6 @@
  			// ruby -e 'while true; $stdout.write("X" * 90); $stdout.flush(); sleep(0.05); puts(); end'
  		}
  		
@@ -228,7 +217,7 @@ Index: src/terminator/view/JTerminalPane.java
  		public void keyPressed(KeyEvent event) {
  			if (doKeyboardScroll(event) || doKeyboardTabAction(event)) {
  				event.consume();
-@@ -354,9 +331,8 @@
+@@ -354,9 +327,8 @@
  			
  			// Support keyboard equivalents when the user's been stupid enough to turn the menu off.
  			if (TerminatorMenuBar.isKeyboardEquivalent(event)) {
@@ -240,7 +229,7 @@ Index: src/terminator/view/JTerminalPane.java
  				}
  				return;
  			}
-@@ -577,20 +553,20 @@
+@@ -577,20 +549,20 @@
  			final int keyCode = e.getKeyCode();
  			if (e.isControlDown() && keyCode == KeyEvent.VK_TAB) {
  				// Emulates Firefox's control-tab/control-shift-tab cycle-tab behavior.
@@ -265,7 +254,7 @@ Index: src/terminator/view/JTerminalPane.java
  				return true;
  			} else if (TerminatorMenuBar.isKeyboardEquivalent(e)) {
  				// Emulates gnome-terminal's alt-<number> jump-to-tab behavior, or an analog of Terminal.app's command-<number> jump-to-window behavior.
-@@ -598,7 +574,7 @@
+@@ -598,7 +570,7 @@
  				final char ch = (char) e.getKeyCode();
  				final int newIndex = TerminatorTabbedPane.keyCharToTabIndex(ch);
  				if (newIndex != -1) {
@@ -274,7 +263,7 @@ Index: src/terminator/view/JTerminalPane.java
  					return true;
  				}
  			}
-@@ -666,56 +642,6 @@
+@@ -666,56 +638,6 @@
  	public void requestFocus() {
  		view.requestFocus();
  	}
@@ -331,7 +320,7 @@ Index: src/terminator/view/JTerminalPane.java
  	public void doCopyAction() {
  		getSelectionHighlighter().copyToSystemClipboard();
  	}
-@@ -751,8 +677,7 @@
+@@ -751,8 +673,7 @@
  			return true;
  		}
  
@@ -341,7 +330,7 @@ Index: src/terminator/view/JTerminalPane.java
  	}
  
  	/**
-@@ -770,17 +695,18 @@
+@@ -770,17 +691,18 @@
  	public void doCloseAction() {
  		destroyProcess();
  		getLogWriter().close();
