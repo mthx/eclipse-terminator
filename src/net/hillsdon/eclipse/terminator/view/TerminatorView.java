@@ -24,7 +24,6 @@ public class TerminatorView extends ViewPart {
     site.getActionBars().getToolBarManager().add(new OpenTerminatorAction());
   }
   
-  @Override
   public void createPartControl(final Composite parent) {
     final JTerminalPane terminalPane = JTerminalPane.newShell();
     final EventThreads eventThreads = new EventThreads(parent, terminalPane);
@@ -38,7 +37,6 @@ public class TerminatorView extends ViewPart {
     _embedding.dispose();
   }
 
-  @Override
   public void setFocus() {
     _embedding.setFocus();
   }

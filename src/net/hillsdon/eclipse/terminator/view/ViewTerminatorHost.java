@@ -1,11 +1,17 @@
 package net.hillsdon.eclipse.terminator.view;
 
 import java.awt.Dimension;
+import java.awt.event.KeyEvent;
+import java.awt.event.MouseEvent;
+import java.util.Collection;
+
+import javax.swing.Action;
 
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PlatformUI;
 
 import terminator.view.JTerminalPane;
+import terminator.view.TerminalPaneActions;
 import terminator.view.TerminalPaneHost;
 
 /**
@@ -16,6 +22,13 @@ import terminator.view.TerminalPaneHost;
  */
 public class ViewTerminatorHost implements TerminalPaneHost  {
 
+  private static final TerminalPaneActions NULL_TERMINAL_PANE_ACTIONS = new TerminalPaneActions() {
+    public void handleKeyboardEquivalent(KeyEvent event) {
+    }
+    public void provideMenuItems(MouseEvent event, Collection<Action> actions) {
+    }
+  };
+  
   private final TerminatorView _terminatorView;
   private final EventThreads _eventThreads;
 
@@ -24,7 +37,6 @@ public class ViewTerminatorHost implements TerminalPaneHost  {
     _eventThreads = eventThreads;
   }
 
-  @Override
   public void closeTerminalPane(final JTerminalPane terminalPane) {
     _eventThreads.runSWTFromSwing(new Runnable() {
       public void run() {
@@ -36,7 +48,6 @@ public class ViewTerminatorHost implements TerminalPaneHost  {
     });
   }
 
-  @Override
   public boolean confirmClose(String processesUsingTty) {
     return true;
   }
@@ -66,6 +77,10 @@ public class ViewTerminatorHost implements TerminalPaneHost  {
   }
 
   public void updateFrameTitle() {
+  }
+
+  public TerminalPaneActions createActions(JTerminalPane terminalPane) {
+    return NULL_TERMINAL_PANE_ACTIONS;
   }
   
 }

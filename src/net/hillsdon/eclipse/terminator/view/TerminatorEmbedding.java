@@ -38,10 +38,8 @@ public class TerminatorEmbedding {
     // This is probably too strong but <tab> can't be our focus traversal
     // key else tab completion in the shell loses the focus.
     frame.setFocusTraversalKeysEnabled(false);
-    _terminalPane.setPopupMenuEnabled(false);
-    _terminalPane.setHost(_host);
     frame.add(_terminalPane);
-    _terminalPane.start();
+    _terminalPane.start(_host);
 
     _composite.addFocusListener(new FocusAdapter() {
       public void focusGained(FocusEvent e) {
@@ -56,7 +54,6 @@ public class TerminatorEmbedding {
 
   public void dispose() {
     _eventThreads.runSwingFromSWT(new Runnable() {
-      @Override
       public void run() {
         _terminalPane.doCloseAction();
       }
