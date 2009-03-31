@@ -9,8 +9,6 @@ There's probably a whole load of things I've not thought of yet but here goes.
 - Ask whether using the Terminator name and icon is reasonable.
 
 == Annoyances
-- New terminal should open in same working directory as 'parent'.
-  gnome-terminal acheives this somehow.
 - Would be nice if Ctrl-W didn't close the active editor in Eclipse when
   the terminator view is focused.  This makes :split windows in vim
   pretty much unusable.

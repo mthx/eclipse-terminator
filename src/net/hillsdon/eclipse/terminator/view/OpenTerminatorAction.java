@@ -2,7 +2,6 @@ package net.hillsdon.eclipse.terminator.view;
 
 import static org.eclipse.ui.plugin.AbstractUIPlugin.imageDescriptorFromPlugin;
 
-import java.util.UUID;
 
 import net.hillsdon.eclipse.terminator.TerminatorPlugin;
 
@@ -18,17 +17,19 @@ import org.eclipse.ui.PlatformUI;
  */
 public class OpenTerminatorAction extends Action {
 
-  public OpenTerminatorAction() {
+  private final TerminatorView _ownerTerminatorView;
+
+  public OpenTerminatorAction(final TerminatorView ownerTerminatorView) {
     super("&New Terminator View");
+    _ownerTerminatorView = ownerTerminatorView;
     setImageDescriptor(imageDescriptorFromPlugin(TerminatorPlugin.ID, "/icons/terminator-16.png"));
   }
 
   @Override
   public void run() {
     final IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
-    final String secondaryId = UUID.randomUUID().toString();
     try {
-      page.showView(TerminatorView.ID, secondaryId, IWorkbenchPage.VIEW_ACTIVATE);
+      page.showView(TerminatorView.ID, TerminatorView.createSecondaryId(_ownerTerminatorView.getCwdOfTerminalIfPossible()), IWorkbenchPage.VIEW_ACTIVATE);
     }
     catch (PartInitException ex) {
     }
