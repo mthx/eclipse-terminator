@@ -3,8 +3,6 @@ package net.hillsdon.eclipse.terminator.view;
 import java.util.UUID;
 
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.ui.IViewSite;
-import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.part.ViewPart;
 
 import terminator.view.JTerminalPane;
@@ -20,16 +18,18 @@ public class TerminatorView extends ViewPart {
   
   private TerminatorEmbedding _embedding;
 
-  @Override
-  public void init(final IViewSite site) throws PartInitException {
-    super.init(site);
-    site.getActionBars().getToolBarManager().add(new OpenTerminatorAction(this));
-  }
-  
   public String getCwdOfTerminalIfPossible() {
     return _embedding.getCwdOfTerminalIfPossible();
   }
-  
+
+  /**
+   * Overriden to increase visibility.
+   */
+  @Override
+  public void setPartName(String partName) {
+    super.setPartName(partName);
+  }
+   
   public void createPartControl(final Composite parent) {
     String secondaryId = getViewSite().getSecondaryId();
     final JTerminalPane terminalPane = JTerminalPane.newShellWithName(null, getWorkingDirectoryFromViewId(secondaryId));
@@ -48,12 +48,7 @@ public class TerminatorView extends ViewPart {
     _embedding.setFocus();
   }
  
-  @Override
-  public void setPartName(final String partName) {
-    super.setPartName(partName);
-  }
-
-  static String getWorkingDirectoryFromViewId(final String id) {
+  public static String getWorkingDirectoryFromViewId(final String id) {
     if (id != null) {
       String[] parts = id.split("\\|");
       if (parts.length == 2 && !parts[1].isEmpty()) {
@@ -63,8 +58,8 @@ public class TerminatorView extends ViewPart {
     return null;
   }
 
-  static String createSecondaryId(final String workingDirectory) {
+  public static String createSecondaryId(final String workingDirectory) {
     return UUID.randomUUID().toString() + "|" + (workingDirectory == null ? "" : workingDirectory);
   }
-  
+ 
 }

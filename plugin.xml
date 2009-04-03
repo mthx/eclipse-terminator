@@ -14,4 +14,38 @@
       </view>
    </extension>
 
+<extension point="org.eclipse.ui.commands">
+      <category
+            name="openshell"
+            id="net.hillsdon.eclipse.openshell.category"/>
+      <command
+            categoryId="net.hillsdon.eclipse.openshell.category"
+            name="Open shell for the current selection"
+            id="net.hillsdon.eclipse.openshell.OpenShellAction"/>
+   </extension>
+   <extension
+         point="org.eclipse.ui.bindings">
+         <key
+               schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+               sequence="M1+M3+S"
+               commandId="net.hillsdon.eclipse.terminatorOpenShellAction">
+         </key>
+   </extension>
+   <extension
+         point="org.eclipse.ui.actionSets">
+      <actionSet
+            label="Terminator Actions"
+            visible="true"
+            id="net.hillsdon.eclipse.terminator.actionSet">
+         <action
+               class="net.hillsdon.eclipse.terminator.actions.OpenTerminatorAction"
+               icon="icons/terminator-16.png"
+               id="net.hillsdon.eclipse.terminatorOpenShellAction"
+               label="Open shell"
+               toolbarPath="org.eclipse.ui.workbench.navigate/history.group"
+               definitionId="net.hillsdon.eclipse.terminator.openTerminatorAction"
+               tooltip="Open shell for the current selection."/>
+      </actionSet>
+   </extension>
+
 </plugin>
