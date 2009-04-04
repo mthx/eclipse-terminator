@@ -52,10 +52,6 @@ public class ViewTerminatorHost implements TerminalPaneHost  {
   public void cycleTab(int delta) {
   }
 
-  public boolean isShowingMenu() {
-    return false;
-  }
-
   public void moveCurrentTab(int direction) {
   }
 
