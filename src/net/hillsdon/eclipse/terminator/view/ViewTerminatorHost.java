@@ -1,7 +1,6 @@
 package net.hillsdon.eclipse.terminator.view;
 
 import java.awt.Dimension;
-import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.util.Collection;
 
@@ -11,8 +10,8 @@ import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PlatformUI;
 
 import terminator.view.JTerminalPane;
-import terminator.view.TerminalPaneActions;
 import terminator.view.TerminalPaneHost;
+import e.gui.MenuItemProvider;
 
 /**
  * Plays the role of the terminal frame but only hosts a single terminal pane
@@ -22,9 +21,7 @@ import terminator.view.TerminalPaneHost;
  */
 public class ViewTerminatorHost implements TerminalPaneHost  {
 
-  private static final TerminalPaneActions NULL_TERMINAL_PANE_ACTIONS = new TerminalPaneActions() {
-    public void handleKeyboardEquivalent(KeyEvent event) {
-    }
+  private static final MenuItemProvider NO_ACTIONS = new MenuItemProvider() {
     public void provideMenuItems(MouseEvent event, Collection<Action> actions) {
     }
   };
@@ -79,8 +76,9 @@ public class ViewTerminatorHost implements TerminalPaneHost  {
   public void updateFrameTitle() {
   }
 
-  public TerminalPaneActions createActions(JTerminalPane terminalPane) {
-    return NULL_TERMINAL_PANE_ACTIONS;
+  @Override
+  public MenuItemProvider createMenuItemProvider(final JTerminalPane terminalPane) {
+    return NO_ACTIONS;
   }
   
 }
