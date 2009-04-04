@@ -16,31 +16,7 @@ Index: src/terminator/terminal/PtyProcess.java
 ===================================================================
 --- src/terminator/terminal/PtyProcess.java	(revision 1504)
 +++ src/terminator/terminal/PtyProcess.java	(working copy)
-@@ -1,11 +1,19 @@
- package terminator.terminal;
- 
--import e.util.*;
- import java.awt.Dimension;
--import java.io.*;
--import java.util.concurrent.*;
--import java.util.regex.*;
-+import java.io.IOException;
-+import java.io.InputStream;
-+import java.io.OutputStream;
-+import java.util.concurrent.Callable;
-+import java.util.concurrent.ExecutorService;
-+import java.util.concurrent.Future;
-+import java.util.regex.Matcher;
-+import java.util.regex.Pattern;
- 
-+import e.util.FileUtilities;
-+import e.util.Log;
-+import e.util.ThreadUtilities;
-+
- public class PtyProcess {
-     private class PtyInputStream extends InputStream {
-         /**
-@@ -192,6 +200,10 @@
+@@ -192,6 +192,10 @@
          return result;
      }
      
@@ -51,7 +27,7 @@ Index: src/terminator/terminal/PtyProcess.java
      private native void nativeStartProcess(String executable, String[] argv, String workingDirectory) throws IOException;
      private native void nativeWaitFor() throws IOException;
      public native void destroy() throws IOException;
-@@ -202,4 +214,7 @@
+@@ -202,4 +206,7 @@
      public native void sendResizeNotification(Dimension sizeInChars, Dimension sizeInPixels) throws IOException;
      
      private native String nativeListProcessesUsingTty() throws IOException;
