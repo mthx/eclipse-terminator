@@ -59,11 +59,11 @@ public class TerminatorEmbedding {
    * 
    */
   public String getCwdOfTerminalIfPossible() {
-    return resolvePidSymlink(("/proc/" + getChildPid() + "/cwd"));
+    return resolvePidSymlink(("/proc/" + getPtyProcessPid() + "/cwd"));
   }
 
-  private long getChildPid() {
-    return _terminalPane.getTerminalView().getTerminalControl().getPtyProcess().getChildPid();
+  private long getPtyProcessPid() {
+    return _terminalPane.getTerminalView().getTerminalControl().getPtyProcess().getPid();
   }
 
   private String resolvePidSymlink(String pidDir) {
