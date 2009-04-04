@@ -16,19 +16,19 @@
 
 <extension point="org.eclipse.ui.commands">
       <category
-            name="openshell"
-            id="net.hillsdon.eclipse.openshell.category"/>
+            name="terminator"
+            id="net.hillsdon.eclipse.terminator.category"/>
       <command
-            categoryId="net.hillsdon.eclipse.openshell.category"
-            name="Open shell for the current selection"
-            id="net.hillsdon.eclipse.openshell.OpenShellAction"/>
+            categoryId="net.hillsdon.eclipse.terminator.category"
+            name="Open terminal view for the current selection"
+            id="net.hillsdon.eclipse.terminator.open"/>
    </extension>
    <extension
          point="org.eclipse.ui.bindings">
          <key
                schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
                sequence="M1+M3+S"
-               commandId="net.hillsdon.eclipse.terminatorOpenShellAction">
+               commandId="net.hillsdon.eclipse.terminator.open">
          </key>
    </extension>
    <extension
@@ -41,10 +41,10 @@
                class="net.hillsdon.eclipse.terminator.actions.OpenTerminatorAction"
                icon="icons/terminator-16.png"
                id="net.hillsdon.eclipse.terminatorOpenShellAction"
-               label="Open shell"
+               label="Open terminal"
                toolbarPath="org.eclipse.ui.workbench.navigate/history.group"
-               definitionId="net.hillsdon.eclipse.terminator.openTerminatorAction"
-               tooltip="Open shell for the current selection."/>
+               definitionId="net.hillsdon.eclipse.terminator.open"
+               tooltip="Open terminal view for the current selection"/>
       </actionSet>
    </extension>
 
