@@ -3,8 +3,6 @@ package net.hillsdon.eclipse.terminator.view;
 import java.awt.Frame;
 import java.io.File;
 import java.io.IOException;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.awt.SWT_AWT;
@@ -57,22 +55,15 @@ public class TerminatorEmbedding {
   }
 
   /**
-   * This implementation uses the /proc filesystem and will only work on Linux and similar.
+   * This implementation uses the /proc filesystem and will only work on Linux.
    * 
-   * The grossest hack is getting our pid, which we assume to be the first child in
-   * those reported from the native code.
    */
   public String getCwdOfTerminalIfPossible() {
-    final String processList = _terminalPane.getTerminalView().getTerminalControl().getPtyProcess().listProcessesUsingTty();
-    return resolvePidSymlink(getCwdSymlinkForFirstChildProcess(processList));
+    return resolvePidSymlink(("/proc/" + getChildPid() + "/cwd"));
   }
 
-  static String getCwdSymlinkForFirstChildProcess(final String processList) {
-    Matcher pidMatcher = Pattern.compile("\\((\\d+)\\)").matcher(processList);
-    if (pidMatcher.find()) {
-      return "/proc/" + pidMatcher.group(1) + "/cwd";
-    }
-    return null;
+  private long getChildPid() {
+    return _terminalPane.getTerminalView().getTerminalControl().getPtyProcess().getChildPid();
   }
 
   private String resolvePidSymlink(String pidDir) {
