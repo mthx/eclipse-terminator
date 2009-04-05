@@ -8,5 +8,6 @@
 	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/3"/>
 	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="src" path="unitTests/src"/>
 	<classpathentry kind="output" path=".generated/eclipse"/>
 </classpath>
