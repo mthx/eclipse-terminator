@@ -63,7 +63,7 @@ public class TerminatorEmbedding {
   }
 
   private long getPtyProcessPid() {
-    return _terminalPane.getTerminalView().getTerminalControl().getPtyProcess().getPid();
+    return _terminalPane.getTerminalView().getTerminalControl().getPtyProcess().getProcessId();
   }
 
   private String resolvePidSymlink(String pidDir) {
