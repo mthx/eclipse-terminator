@@ -1,8 +1,6 @@
 There's probably a whole load of things I've not thought of yet but here goes.
 
 == To be deployable (Linux only)
-- Ctrl-PageUp/Down are being eated somehow - they're needed to switch views
-  in Eclipse.
 - Ask whether using the Terminator name and icon is reasonable.
 
 == Other
