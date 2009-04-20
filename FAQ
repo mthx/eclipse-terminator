@@ -20,3 +20,15 @@ block below after 'rxvt*'.
 
 See also jessies.org FAQ entry.
 
+2. I can't see some text.
+
+Some applications have a default color scheme that doesn't work well with a
+black on white terminal.  This scheme was chosen as the default so as to fit
+in with Eclipse.  For now there is no UI to change the color scheme so either
+run Terminator itself and edit it there or change the colors used by the
+application.
+
+Specific applications:
+  * irssi white-on-white: use one of http://irssi.org/themes e.g. foxmask.
+  * vim see :colorscheme <tab> and :set background=light
+

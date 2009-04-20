@@ -1,25 +1,38 @@
 There's probably a whole load of things I've not thought of yet but here goes.
 
-== To be deployable (Linux only)
+== Short-term todos
+- [*] Action to clear the scrollback (or limit it?).
+- [*] GTK LAF seems to be unstable.
+    Reinvestigate.
+- Hyperlink support as in gnome-terminal using Eclipse browser API.
+
+== Blocking Linux release
+- Starred short-term todos.
 - Ask whether using the Terminator name and icon is reasonable.
+
+== Blocking Mac OS/Windows release
+- Binaries (are there cross-platform jessies.org nightlies we can copy from?).
+- Determine if we really need 1.6 (issue for Macs?)
+- Cross-platform impl of getCwdOfTerminalIfPossible.
 
 == Other
 - Would be nice if Ctrl-W didn't close the active editor in Eclipse when
   the terminator view is focused.  This makes :split windows in vim
   pretty much unusable.
 - If using as fast view (?) then restore doesn't redraw.
-- GTK LAF seems to be unstable.
 - Maximise loses focus from terminal.
 - Fonts look ugly compared to gnome-terminal.
 - "Monospace" font takes up too much vertical space when running with open-jdk.
 - Partial text at the top - see Stuart Bell's suggestion in terminator TODO.
 - Stacktrace in log on close.
-- Eclipse based context menu.
+- Eclipse based context menu 
+    This seems unreasonably difficult: it doesn't show over Swing component
+    on Linux and I can't seem to work around it.  A different Shell works but
+    is ugly.
 - Eclipse based preferences.
-- Open shell for current directory for Eclipse selection.
-- Fail well on non-Linux and/or cross platform support (later).
+    Not clear that storing them in Eclipse preference store is desirable but
+    UI for editing them is.
 - Command-as-editor (e.g. vim).  Hard to fit with the editor lifecycle though.
-- Hyperlink support as in gnome-terminal.
 - Foreground background color munging as in gnome-terminal, e.g. makes white
   on white viewable by darkening the foreground.
 
