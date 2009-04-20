@@ -27,7 +27,6 @@ public class CopyAction extends Action {
     ISharedImages sharedImages = window.getWorkbench().getSharedImages();
     setImageDescriptor(sharedImages.getImageDescriptor(ISharedImages.IMG_TOOL_COPY));
     setDisabledImageDescriptor(sharedImages.getImageDescriptor(ISharedImages.IMG_TOOL_COPY_DISABLED));
-    
   }
 
   @Override
