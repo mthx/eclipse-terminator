@@ -1,8 +1,15 @@
 package net.hillsdon.eclipse.terminator.view;
 
 import java.awt.Frame;
+import java.awt.Toolkit;
+import java.awt.datatransfer.Clipboard;
+import java.awt.datatransfer.DataFlavor;
+import java.awt.datatransfer.FlavorEvent;
+import java.awt.datatransfer.FlavorListener;
 import java.io.File;
 import java.io.IOException;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.awt.SWT_AWT;
@@ -40,9 +47,10 @@ public class TerminatorEmbedding {
     }
   }
 
-  private final JTerminalPane _terminalPane;
-  private final TerminalPaneHost _host;
   private final EventThreads _eventThreads;
+  private final TerminalPaneHost _host;
+  private final JTerminalPane _terminalPane;
+  private final Set<PasteEnabledListener> _pasteEnabledListeners = new LinkedHashSet<PasteEnabledListener>();
   private Composite _composite;
   private Button _swtFocusControl;
 
@@ -66,6 +74,12 @@ public class TerminatorEmbedding {
     _composite.addListener(SWT.KeyDown, new RepostNavigationEventsWithSwtControlFocused());
     
     final Frame frame = SWT_AWT.new_Frame(_composite);
+    _eventThreads.runSwingFromSWT(new Runnable() {
+      @Override
+      public void run() {
+      }
+    });
+    
     // This is probably too strong but <tab> can't be our focus traversal key else tab completion in the shell loses the focus.
     frame.setFocusTraversalKeysEnabled(false);
     frame.add(_terminalPane);
@@ -81,7 +95,7 @@ public class TerminatorEmbedding {
       }
     });
   }
-  
+
   private boolean isEclipseHandledNavigationEvent(Event keyboardEvent) {
     return (keyboardEvent.keyCode == SWT.PAGE_UP || keyboardEvent.keyCode == SWT.PAGE_DOWN) && (keyboardEvent.stateMask & SWT.CONTROL) != 0;
   }
@@ -119,6 +133,51 @@ public class TerminatorEmbedding {
       }
     }
     return null;
+  }
+  
+  public void doCopyAction() {
+    _eventThreads.runSwingFromSWT(new Runnable() {
+      public void run() {
+        _terminalPane.doCopyAction();
+      }
+    });
+  }
+  
+  public void doPasteAction() {
+    _eventThreads.runSwingFromSWT(new Runnable() {
+      public void run() {
+        _terminalPane.doPasteAction();
+      }
+    });
+  }
+
+  private Clipboard getSwingClipboard() {
+    return Toolkit.getDefaultToolkit().getSystemClipboard();
+  }
+  
+  public void addPasteEnabledListener(final PasteEnabledListener listener) {
+    _eventThreads.runSwingFromSWT(new Runnable() {
+      public void run() {
+        getSwingClipboard().addFlavorListener(new FlavorListener() {
+          public void flavorsChanged(final FlavorEvent event) {
+            firePasteEnabledChangedSwing();
+          }
+        });
+        firePasteEnabledChangedSwing();
+      }
+    });
+    _pasteEnabledListeners.add(listener);
+  }
+  
+  private void firePasteEnabledChangedSwing() {
+    final boolean newEnablement = getSwingClipboard().isDataFlavorAvailable(DataFlavor.stringFlavor);
+    _eventThreads.runSWTFromSwing(new Runnable() {
+      public void run() {
+        for (PasteEnabledListener listener : _pasteEnabledListeners) {
+          listener.pasteEnablementChanged(newEnablement);
+        }
+      }
+    });
   }
   
   public void dispose() {

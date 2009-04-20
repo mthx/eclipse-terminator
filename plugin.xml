@@ -22,14 +22,29 @@
             categoryId="net.hillsdon.eclipse.terminator.category"
             name="Open terminal view for the current selection"
             id="net.hillsdon.eclipse.terminator.open"/>
+      <command
+            categoryId="net.hillsdon.eclipse.terminator.category"
+            name="Copy"
+            id="net.hillsdon.eclipse.terminator.edit.copy"/>
+      <command
+            categoryId="net.hillsdon.eclipse.terminator.category"
+            name="Copy"
+            id="net.hillsdon.eclipse.terminator.edit.paste"/>
    </extension>
    <extension
          point="org.eclipse.ui.bindings">
          <key
                schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
                sequence="M1+M3+S"
-               commandId="net.hillsdon.eclipse.terminator.open">
-         </key>
+               commandId="net.hillsdon.eclipse.terminator.open"/>
+         <key
+               schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+               sequence="M1+Shift+C"
+               commandId="net.hillsdon.eclipse.terminator.edit.copy"/>
+         <key
+               schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+               sequence="M1+Shift+V"
+               commandId="net.hillsdon.eclipse.terminator.edit.paste"/>
    </extension>
    <extension
          point="org.eclipse.ui.actionSets">
