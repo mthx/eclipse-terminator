@@ -74,12 +74,6 @@ public class TerminatorEmbedding {
     _composite.addListener(SWT.KeyDown, new RepostNavigationEventsWithSwtControlFocused());
     
     final Frame frame = SWT_AWT.new_Frame(_composite);
-    _eventThreads.runSwingFromSWT(new Runnable() {
-      @Override
-      public void run() {
-      }
-    });
-    
     // This is probably too strong but <tab> can't be our focus traversal key else tab completion in the shell loses the focus.
     frame.setFocusTraversalKeysEnabled(false);
     frame.add(_terminalPane);
