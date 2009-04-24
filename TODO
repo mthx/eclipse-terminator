@@ -2,8 +2,6 @@ There's probably a whole load of things I've not thought of yet but here goes.
 
 == Short-term todos
 - [*] Action to clear the scrollback (or limit it?).
-- [*] GTK LAF seems to be unstable.
-    Reinvestigate.
 - Hyperlink support as in gnome-terminal using Eclipse browser API.
 
 == Blocking Linux release
@@ -16,6 +14,9 @@ There's probably a whole load of things I've not thought of yet but here goes.
 - Cross-platform impl of getCwdOfTerminalIfPossible.
 
 == Other
+- GTK LAF hits this: https://bugs.launchpad.net/ubuntu/+source/libxcb/+bug/87947
+   - Enable for other platforms?  Enable when fix can be detected?
+   - Only real impact is that scrollbars look out of place.
 - Would be nice if Ctrl-W didn't close the active editor in Eclipse when
   the terminator view is focused.  This makes :split windows in vim
   pretty much unusable.
