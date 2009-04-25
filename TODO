@@ -1,7 +1,6 @@
 There's probably a whole load of things I've not thought of yet but here goes.
 
 == Short-term todos
-- [*] Action to clear the scrollback (or limit it?).
 - Hyperlink support as in gnome-terminal using Eclipse browser API.
 
 == Blocking Linux release
@@ -36,4 +35,5 @@ There's probably a whole load of things I've not thought of yet but here goes.
 - Command-as-editor (e.g. vim).  Hard to fit with the editor lifecycle though.
 - Foreground background color munging as in gnome-terminal, e.g. makes white
   on white viewable by darkening the foreground.
+- Consider limiting the scrollback.
 
