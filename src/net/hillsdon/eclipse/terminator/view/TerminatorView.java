@@ -2,6 +2,7 @@ package net.hillsdon.eclipse.terminator.view;
 
 import java.util.UUID;
 
+import net.hillsdon.eclipse.terminator.view.actions.ClearScrollbackAction;
 import net.hillsdon.eclipse.terminator.view.actions.CopyAction;
 import net.hillsdon.eclipse.terminator.view.actions.PasteAction;
 
@@ -49,6 +50,7 @@ public class TerminatorView extends ViewPart {
     
     addAction(new CopyAction(window, _embedding));
     addAction(new PasteAction(window, _embedding));
+    addAction(new ClearScrollbackAction(window, _embedding));
   }
   
   /**

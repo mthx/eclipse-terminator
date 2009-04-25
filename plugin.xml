@@ -30,6 +30,10 @@
             categoryId="net.hillsdon.eclipse.terminator.category"
             name="Copy"
             id="net.hillsdon.eclipse.terminator.edit.paste"/>
+      <command
+            categoryId="net.hillsdon.eclipse.terminator.category"
+            name="Clear Scrollback"
+            id="net.hillsdon.eclipse.terminator.edit.clearScrollback"/>
    </extension>
    <extension
          point="org.eclipse.ui.bindings">
@@ -45,6 +49,10 @@
                schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
                sequence="M1+Shift+V"
                commandId="net.hillsdon.eclipse.terminator.edit.paste"/>
+         <key
+               schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+               sequence="M1+Shift+K"
+               commandId="net.hillsdon.eclipse.terminator.edit.clearScrollback"/>
    </extension>
    <extension
          point="org.eclipse.ui.actionSets">

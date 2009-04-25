@@ -29,6 +29,11 @@ import terminator.view.TerminalPaneHost;
 /**
  * A JTerminal pane that can be installed in a SWT composite.
  * 
+ * Note that methods are expected to be called from the SWT thread
+ * but will be run on the Swing thread.  To reduce the chance of
+ * deadlock this is done asyncronously so clients cannot rely on
+ * the timing of these actions wrt SWT events.
+ * 
  * @author mth
  */
 public class TerminatorEmbedding {
@@ -129,7 +134,7 @@ public class TerminatorEmbedding {
     return null;
   }
   
-  public void doCopyAction() {
+  public void copy() {
     _eventThreads.runSwingFromSWT(new Runnable() {
       public void run() {
         _terminalPane.doCopyAction();
@@ -137,10 +142,18 @@ public class TerminatorEmbedding {
     });
   }
   
-  public void doPasteAction() {
+  public void paste() {
     _eventThreads.runSwingFromSWT(new Runnable() {
       public void run() {
         _terminalPane.doPasteAction();
+      }
+    });
+  }
+  
+  public void clearScrollback() {
+    _eventThreads.runSwingFromSWT(new Runnable() {
+      public void run() {
+        _terminalPane.getTerminalView().getModel().clearScrollBuffer();
       }
     });
   }

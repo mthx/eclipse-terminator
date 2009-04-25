@@ -21,7 +21,6 @@ public class CopyAction extends Action {
   public CopyAction(final IWorkbenchWindow window, final TerminatorEmbedding embedding) {
     _embedding = embedding;
     setText("Copy");
-    setToolTipText("Copy"); 
     // We don't want the Ctrl-C shortcut that we'd get using the standard copy id.
     setActionDefinitionId(ID);
     ISharedImages sharedImages = window.getWorkbench().getSharedImages();
@@ -31,7 +30,7 @@ public class CopyAction extends Action {
 
   @Override
   public void run() {
-    _embedding.doCopyAction();
+    _embedding.copy();
   }
 
 }

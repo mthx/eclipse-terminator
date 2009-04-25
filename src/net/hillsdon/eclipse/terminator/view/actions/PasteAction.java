@@ -21,7 +21,6 @@ public class PasteAction extends Action implements PasteEnabledListener {
   public PasteAction(final IWorkbenchWindow window, final TerminatorEmbedding embedding) {
     _embedding = embedding;
     setText("Paste");
-    setToolTipText("Paste"); 
     // We don't want the Ctrl-V shortcut that we'd get using the standard paste id.
     setActionDefinitionId(ID);
     ISharedImages sharedImages = window.getWorkbench().getSharedImages();
@@ -33,7 +32,7 @@ public class PasteAction extends Action implements PasteEnabledListener {
 
   @Override
   public void run() {
-    _embedding.doPasteAction();
+    _embedding.paste();
   }
 
   public void pasteEnablementChanged(boolean newEnablement) {
