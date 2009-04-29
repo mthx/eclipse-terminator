@@ -2,6 +2,9 @@ There's probably a whole load of things I've not thought of yet but here goes.
 
 == Short-term todos
 - Hyperlink support as in gnome-terminal using Eclipse browser API.
+    - Mailing list post suggests Ctrl-Click already does this.
+- [*] Crash when running a second Eclipse
+    - Due to blatting native libs?
 
 == Blocking Linux release
 - Starred short-term todos.
