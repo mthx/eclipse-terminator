@@ -1,0 +1,210 @@
+Index: src/terminator/view/TerminalView.java
+===================================================================
+--- src/terminator/view/TerminalView.java	(revision 1512)
++++ src/terminator/view/TerminalView.java	(working copy)
+@@ -41,6 +41,8 @@
+ 	* necessary checks.
+ 	*/
+ 	private ArrayList<ArrayList<Highlight>> lineHighlights = new ArrayList<ArrayList<Highlight>>();
++
++	private List<Highlight> highlightsUnderMouse = Collections.emptyList();
+ 	
+ 	public TerminalView() {
+ 		TerminatorPreferences preferences = Terminator.getPreferences();
+@@ -74,22 +76,26 @@
+ 					return;
+ 				}
+ 				lastLocation = location;
+-				Cursor cursor = null;
+-				List<Highlight> highlights = getHighlightsForLocation(viewToModel(event.getPoint()));
+-				for (Highlight highlight : highlights) {
+-					if (highlight.getCursor() != null) {
+-						cursor = highlight.getCursor();
+-						break;
+-					}
+-				}
+-				if (cursor == null) {
+-					cursor = Cursor.getDefaultCursor();
+-				}
+-				setCursor(cursor);
++				List<Highlight> previousHighlights = highlightsUnderMouse;
++				highlightsUnderMouse = getHighlightsForLocation(viewToModel(event.getPoint()));
++                repaintHighlights(previousHighlights);
++				repaintHighlights(highlightsUnderMouse);
++				setCursor(getCursorForHighlightsUnderMouse());
+ 			}
++
++			private Cursor getCursorForHighlightsUnderMouse() {
++                for (Highlight highlight : highlightsUnderMouse) {
++                    if (highlight.getCursor() != null) {
++                        return highlight.getCursor();
++                    }
++                }
++                return Cursor.getDefaultCursor();
++			}
++			
+ 		});
+ 		addMouseWheelListener(HorizontalScrollWheelListener.INSTANCE);
+ 		addHighlighter(new FindHighlighter());
++		addHighlighter(new URLHighlighter());
+ 		becomeDropTarget();
+ 		cursorBlinker = new CursorBlinker(this);
+ 		selectionHighlighter = new SelectionHighlighter(this);
+@@ -548,6 +554,12 @@
+ 		repaint(0, top, size.width, size.height - top);
+ 	}
+ 	
++    private void repaintHighlights(final Collection<Highlight> highlights) {
++        for (Highlight highlight : highlights) {
++            repaintHighlight(highlight);
++        }
++    }
++
+ 	private void repaintHighlight(Highlight highlight) {
+ 		Point redrawStart = modelToView(highlight.getStart()).getLocation();
+ 		Rectangle endRect = modelToView(highlight.getEnd());
+@@ -647,9 +659,13 @@
+ 				result.add(highlight);
+ 			}
+ 		}
+-		return result;
++		return Collections.unmodifiableList(result);
+ 	}
+ 	
++	public boolean isHighlightUnderMouse(Highlight highlight) {
++	    return highlightsUnderMouse.contains(highlight);
++	}
++	
+ 	/** Returns a (possibly empty) list containing all highlights in the indexed line. */
+ 	private List<Highlight> getHighlightsForLine(int lineIndex) {
+ 		if (lineIndex >= lineHighlights.size() || lineHighlights.get(lineIndex) == null) {
+Index: src/terminator/view/highlight/URLHighlighter.java
+===================================================================
+--- src/terminator/view/highlight/URLHighlighter.java	(revision 0)
++++ src/terminator/view/highlight/URLHighlighter.java	(revision 0)
+@@ -0,0 +1,112 @@
++package terminator.view.highlight;
++
++import java.awt.Cursor;
++import java.awt.event.MouseEvent;
++import java.util.regex.Matcher;
++import java.util.regex.Pattern;
++
++import terminator.model.Location;
++import terminator.model.Style;
++import terminator.model.TerminalModel;
++import terminator.view.TerminalView;
++import e.gui.SimpleDialog;
++import e.util.BrowserLauncher;
++
++/**
++ * This works in conjunction with a TerminalView mouse listener that tracks
++ * and repaints highlights under the mouse.
++ */
++public class URLHighlighter implements Highlighter {
++
++    /**
++     * A style that changes its mind in a similar way to that in SelectionHighlighter.
++     */
++    private static class UnderlineWhenMouseOverStyle extends Style {
++        
++        private final TerminalView view;
++        private Highlight highlight;
++
++        public UnderlineWhenMouseOverStyle(TerminalView view) {
++            super(null, null, null, null, false);
++            this.view = view;
++        }
++
++        /**
++         * Breaks the unusual highlight-style cycle.
++         */
++        public void initialize(Highlight highlight) {
++            this.highlight = highlight;
++        }
++        
++        @Override
++        public boolean hasUnderlined() {
++            return isUnderlined();
++        }
++        
++        @Override
++        public boolean isUnderlined() {
++            return view.isHighlightUnderMouse(highlight);
++        }
++        
++    }
++    
++    /**
++     * We fix these so as not to match parts of a users prompt, e.g. "machine:~#".
++     */
++    private static final String SCHEMES = "http|https|ftp|news|mailto|telnet|gopher";
++    
++    /**
++     * Far from perfect but simple. Important not to include trailing
++     * punctuation, it is rarely intended as part of the URL.
++     */
++    private static final Pattern URL_PATTERN = Pattern.compile(
++            "(" + SCHEMES + "):[^\\s]+[^\\s\\.;,?:\"']");
++
++    public int addHighlights(TerminalView view, int firstLineIndex) {
++        TerminalModel model = view.getModel();
++        int count = 0;
++        for (int i = firstLineIndex; i < model.getLineCount(); i++) {
++            String line = model.getTextLine(i).getString();
++            count += addHighlightsOnLine(view, i, line);
++        }
++        return count;
++    }
++
++    private int addHighlightsOnLine(TerminalView view, int lineNo, String line) {
++        final Matcher matcher = URL_PATTERN.matcher(line);
++        int count = 0;
++        while (matcher.find()) {
++            view.addHighlight(createHighlight(view, lineNo, matcher));
++            count++;
++        }
++        return count;
++    }
++
++    private Highlight createHighlight(TerminalView view, int lineNo, final Matcher match) {
++        final Location start = new Location(lineNo, match.start());
++        final Location end = new Location(lineNo, match.end());
++        final UnderlineWhenMouseOverStyle style = new UnderlineWhenMouseOverStyle(view);
++        final Highlight highlight = new Highlight(this, start, end, style);
++        style.initialize(highlight);
++        highlight.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
++        return highlight;
++    }
++
++    public String getName() {
++        return "URL highlighter";
++    }
++
++    public void highlightClicked(final TerminalView view,
++            final Highlight highlight, final String highlitText,
++            final MouseEvent event) {
++        if (event.isControlDown()) {
++            final String url = view.getTabbedString(highlight);
++            try {
++                BrowserLauncher.openURL(url);
++            } catch (Throwable th) {
++                SimpleDialog.showDetails(view, "Problem opening URL", th);
++            }
++        }
++    }
++
++}
+Index: src/terminator/view/highlight/Highlighter.java
+===================================================================
+--- src/terminator/view/highlight/Highlighter.java	(revision 1512)
++++ src/terminator/view/highlight/Highlighter.java	(working copy)
+@@ -15,6 +15,8 @@
+ 	/**
+ 	 * Adds highlights to all lines of the view from the index given onwards.
+ 	 * Returns the number of highlights added.
++	 * 
++	 * FIXME: No-one cares about the return value, remove?
+ 	 */
+ 	public int addHighlights(TerminalView view, int firstLineIndex);
+ 

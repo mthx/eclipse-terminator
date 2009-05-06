@@ -1,6 +1,8 @@
 package net.hillsdon.eclipse.terminator.view;
 
+import java.awt.BorderLayout;
 import java.awt.Frame;
+import java.awt.Panel;
 import java.awt.Toolkit;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.DataFlavor;
@@ -15,6 +17,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.awt.SWT_AWT;
 import org.eclipse.swt.events.FocusAdapter;
 import org.eclipse.swt.events.FocusEvent;
+import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
@@ -81,7 +84,10 @@ public class TerminatorEmbedding {
     final Frame frame = SWT_AWT.new_Frame(_composite);
     // This is probably too strong but <tab> can't be our focus traversal key else tab completion in the shell loses the focus.
     frame.setFocusTraversalKeysEnabled(false);
-    frame.add(_terminalPane);
+    Panel panel = new Panel();
+    panel.setLayout(new BorderLayout());
+    frame.add(panel, BorderLayout.CENTER);
+    panel.add(_terminalPane);
     _terminalPane.start(_host);
 
     _composite.addFocusListener(new FocusAdapter() {
