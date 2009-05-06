@@ -1,6 +1,6 @@
 Index: src/terminator/view/TerminalView.java
 ===================================================================
---- src/terminator/view/TerminalView.java	(revision 1512)
+--- src/terminator/view/TerminalView.java	(revision 1513)
 +++ src/terminator/view/TerminalView.java	(working copy)
 @@ -41,6 +41,8 @@
  	* necessary checks.
@@ -18,30 +18,27 @@ Index: src/terminator/view/TerminalView.java
 -				Cursor cursor = null;
 -				List<Highlight> highlights = getHighlightsForLocation(viewToModel(event.getPoint()));
 -				for (Highlight highlight : highlights) {
--					if (highlight.getCursor() != null) {
++				List<Highlight> previousHighlights = highlightsUnderMouse;
++				highlightsUnderMouse = getHighlightsForLocation(viewToModel(event.getPoint()));
++				repaintHighlights(previousHighlights);
++				repaintHighlights(highlightsUnderMouse);
++				setCursor(getCursorForHighlightsUnderMouse());
++			}
++
++			private Cursor getCursorForHighlightsUnderMouse() {
++				for (Highlight highlight : highlightsUnderMouse) {
+ 					if (highlight.getCursor() != null) {
 -						cursor = highlight.getCursor();
 -						break;
--					}
--				}
++						return highlight.getCursor();
+ 					}
+ 				}
 -				if (cursor == null) {
 -					cursor = Cursor.getDefaultCursor();
 -				}
 -				setCursor(cursor);
-+				List<Highlight> previousHighlights = highlightsUnderMouse;
-+				highlightsUnderMouse = getHighlightsForLocation(viewToModel(event.getPoint()));
-+                repaintHighlights(previousHighlights);
-+				repaintHighlights(highlightsUnderMouse);
-+				setCursor(getCursorForHighlightsUnderMouse());
++				return Cursor.getDefaultCursor();
  			}
-+
-+			private Cursor getCursorForHighlightsUnderMouse() {
-+                for (Highlight highlight : highlightsUnderMouse) {
-+                    if (highlight.getCursor() != null) {
-+                        return highlight.getCursor();
-+                    }
-+                }
-+                return Cursor.getDefaultCursor();
-+			}
 +			
  		});
  		addMouseWheelListener(HorizontalScrollWheelListener.INSTANCE);
@@ -54,11 +51,11 @@ Index: src/terminator/view/TerminalView.java
  		repaint(0, top, size.width, size.height - top);
  	}
  	
-+    private void repaintHighlights(final Collection<Highlight> highlights) {
-+        for (Highlight highlight : highlights) {
-+            repaintHighlight(highlight);
-+        }
-+    }
++	private void repaintHighlights(final Collection<Highlight> highlights) {
++		for (Highlight highlight : highlights) {
++			repaintHighlight(highlight);
++		}
++	}
 +
  	private void repaintHighlight(Highlight highlight) {
  		Point redrawStart = modelToView(highlight.getStart()).getLocation();
@@ -72,7 +69,7 @@ Index: src/terminator/view/TerminalView.java
  	}
  	
 +	public boolean isHighlightUnderMouse(Highlight highlight) {
-+	    return highlightsUnderMouse.contains(highlight);
++		return highlightsUnderMouse.contains(highlight);
 +	}
 +	
  	/** Returns a (possibly empty) list containing all highlights in the indexed line. */
@@ -197,7 +194,7 @@ Index: src/terminator/view/highlight/URLHighlighter.java
 +}
 Index: src/terminator/view/highlight/Highlighter.java
 ===================================================================
---- src/terminator/view/highlight/Highlighter.java	(revision 1512)
+--- src/terminator/view/highlight/Highlighter.java	(revision 1513)
 +++ src/terminator/view/highlight/Highlighter.java	(working copy)
 @@ -15,6 +15,8 @@
  	/**
