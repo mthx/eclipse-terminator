@@ -72,7 +72,6 @@ public class ViewTerminatorHost implements TerminalPaneHost  {
   public void updateFrameTitle() {
   }
 
-  @Override
   public MenuItemProvider createMenuItemProvider(final JTerminalPane terminalPane) {
     return NO_ACTIONS;
   }
