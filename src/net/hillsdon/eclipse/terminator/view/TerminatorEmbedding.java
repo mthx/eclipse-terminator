@@ -25,6 +25,9 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
+import org.jessies.os.Posix;
+
+import e.util.ProcessUtilities;
 
 import terminator.view.JTerminalPane;
 import terminator.view.TerminalPaneHost;
@@ -114,32 +117,16 @@ public class TerminatorEmbedding {
     return swtFocusControl;
   }
 
-  /**
-   * This implementation uses the /proc filesystem and will only work on Linux.
-   */
   public String getCwdOfTerminalIfPossible() {
-    return resolvePidSymlink(("/proc/" + getPtyProcessPid() + "/cwd"));
-  }
-
-  private long getPtyProcessPid() {
-    return _terminalPane.getTerminalView().getTerminalControl().getPtyProcess().getPid();
-  }
-
-  private String resolvePidSymlink(final String pidDir) {
-    if (pidDir == null) {
+    // As in JTerminalPane.newShellHere().
+    int fd = _terminalPane.getControl().getPtyProcess().getFd();
+    int foregroundPid = Posix.tcgetpgrp(fd);
+    if (foregroundPid < 0) {
       return null;
     }
-    File cwdLink = new File(pidDir);
-    if (cwdLink.exists()) {
-      try {
-        return cwdLink.getCanonicalFile().toString();
-      }
-      catch (IOException nevermind) {
-      }
-    }
-    return null;
+    return ProcessUtilities.findCurrentWorkingDirectory(foregroundPid);
   }
-  
+
   public void copy() {
     _eventThreads.runSwingFromSWT(new Runnable() {
       public void run() {

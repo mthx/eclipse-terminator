@@ -78,6 +78,7 @@ public class TerminatorPlugin extends AbstractUIPlugin {
     System.setProperty("org.jessies.libraryDirectories", libsDir.toString());
     copyLibToLibsDir(libsDir, "libsalma-hayek.so");
     copyLibToLibsDir(libsDir, "libpty.so");
+    copyLibToLibsDir(libsDir, "libposix.so");
   }
 
   /**
