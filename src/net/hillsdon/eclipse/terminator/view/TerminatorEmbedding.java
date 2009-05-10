@@ -48,7 +48,6 @@ public class TerminatorEmbedding {
    * This is the only way I can make Page-Up/Down navigation work. 
    */
   private final class RepostNavigationEventsWithSwtControlFocused implements Listener {
-    @Override
     public void handleEvent(final Event e) {
       if (isEclipseHandledNavigationEvent(e) && !_swtFocusControl.isFocusControl()) {
         if (_swtFocusControl.forceFocus()) {
