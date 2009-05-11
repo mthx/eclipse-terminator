@@ -1,6 +1,6 @@
 Index: src/terminator/view/TerminalView.java
 ===================================================================
---- src/terminator/view/TerminalView.java	(revision 1513)
+--- src/terminator/view/TerminalView.java	(revision 1520)
 +++ src/terminator/view/TerminalView.java	(working copy)
 @@ -41,6 +41,8 @@
  	* necessary checks.
@@ -43,7 +43,7 @@ Index: src/terminator/view/TerminalView.java
  		});
  		addMouseWheelListener(HorizontalScrollWheelListener.INSTANCE);
  		addHighlighter(new FindHighlighter());
-+		addHighlighter(new URLHighlighter());
++		addHighlighter(new UrlHighlighter());
  		becomeDropTarget();
  		cursorBlinker = new CursorBlinker(this);
  		selectionHighlighter = new SelectionHighlighter(this);
@@ -75,30 +75,29 @@ Index: src/terminator/view/TerminalView.java
  	/** Returns a (possibly empty) list containing all highlights in the indexed line. */
  	private List<Highlight> getHighlightsForLine(int lineIndex) {
  		if (lineIndex >= lineHighlights.size() || lineHighlights.get(lineIndex) == null) {
-Index: src/terminator/view/highlight/URLHighlighter.java
+Index: src/terminator/view/highlight/UrlHighlighter.java
 ===================================================================
---- src/terminator/view/highlight/URLHighlighter.java	(revision 0)
-+++ src/terminator/view/highlight/URLHighlighter.java	(revision 0)
-@@ -0,0 +1,112 @@
+--- src/terminator/view/highlight/UrlHighlighter.java	(revision 0)
++++ src/terminator/view/highlight/UrlHighlighter.java	(revision 0)
+@@ -0,0 +1,88 @@
 +package terminator.view.highlight;
 +
++import e.gui.SimpleDialog;
++import e.util.BrowserLauncher;
++import e.util.PatternUtilities;
 +import java.awt.Cursor;
 +import java.awt.event.MouseEvent;
 +import java.util.regex.Matcher;
-+import java.util.regex.Pattern;
-+
 +import terminator.model.Location;
 +import terminator.model.Style;
 +import terminator.model.TerminalModel;
 +import terminator.view.TerminalView;
-+import e.gui.SimpleDialog;
-+import e.util.BrowserLauncher;
 +
 +/**
 + * This works in conjunction with a TerminalView mouse listener that tracks
 + * and repaints highlights under the mouse.
 + */
-+public class URLHighlighter implements Highlighter {
++public class UrlHighlighter implements Highlighter {
 +
 +    /**
 +     * A style that changes its mind in a similar way to that in SelectionHighlighter.
@@ -132,39 +131,17 @@ Index: src/terminator/view/highlight/URLHighlighter.java
 +        
 +    }
 +    
-+    /**
-+     * We fix these so as not to match parts of a users prompt, e.g. "machine:~#".
-+     */
-+    private static final String SCHEMES = "http|https|ftp|news|mailto|telnet|gopher";
-+    
-+    /**
-+     * Far from perfect but simple. Important not to include trailing
-+     * punctuation, it is rarely intended as part of the URL.
-+     */
-+    private static final Pattern URL_PATTERN = Pattern.compile(
-+            "(" + SCHEMES + "):[^\\s]+[^\\s\\.;,?:\"']");
-+
-+    public int addHighlights(TerminalView view, int firstLineIndex) {
-+        TerminalModel model = view.getModel();
-+        int count = 0;
++    public void addHighlights(final TerminalView view, final int firstLineIndex) {
++        final TerminalModel model = view.getModel();
 +        for (int i = firstLineIndex; i < model.getLineCount(); i++) {
-+            String line = model.getTextLine(i).getString();
-+            count += addHighlightsOnLine(view, i, line);
++            final Matcher matcher = PatternUtilities.HYPERLINK_PATTERN.matcher(model.getTextLine(i).getString());
++            while (matcher.find()) {
++                view.addHighlight(createHighlight(view, i, matcher));
++            }
 +        }
-+        return count;
 +    }
 +
-+    private int addHighlightsOnLine(TerminalView view, int lineNo, String line) {
-+        final Matcher matcher = URL_PATTERN.matcher(line);
-+        int count = 0;
-+        while (matcher.find()) {
-+            view.addHighlight(createHighlight(view, lineNo, matcher));
-+            count++;
-+        }
-+        return count;
-+    }
-+
-+    private Highlight createHighlight(TerminalView view, int lineNo, final Matcher match) {
++    private Highlight createHighlight(final TerminalView view, final int lineNo, final Matcher match) {
 +        final Location start = new Location(lineNo, match.start());
 +        final Location end = new Location(lineNo, match.end());
 +        final UnderlineWhenMouseOverStyle style = new UnderlineWhenMouseOverStyle(view);
@@ -182,9 +159,8 @@ Index: src/terminator/view/highlight/URLHighlighter.java
 +            final Highlight highlight, final String highlitText,
 +            final MouseEvent event) {
 +        if (event.isControlDown()) {
-+            final String url = view.getTabbedString(highlight);
 +            try {
-+                BrowserLauncher.openURL(url);
++                BrowserLauncher.openURL(highlitText);
 +            } catch (Throwable th) {
 +                SimpleDialog.showDetails(view, "Problem opening URL", th);
 +            }
@@ -192,16 +168,3 @@ Index: src/terminator/view/highlight/URLHighlighter.java
 +    }
 +
 +}
-Index: src/terminator/view/highlight/Highlighter.java
-===================================================================
---- src/terminator/view/highlight/Highlighter.java	(revision 1513)
-+++ src/terminator/view/highlight/Highlighter.java	(working copy)
-@@ -15,6 +15,8 @@
- 	/**
- 	 * Adds highlights to all lines of the view from the index given onwards.
- 	 * Returns the number of highlights added.
-+	 * 
-+	 * FIXME: No-one cares about the return value, remove?
- 	 */
- 	public int addHighlights(TerminalView view, int firstLineIndex);
- 
