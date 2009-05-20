@@ -131,6 +131,8 @@ public class TerminatorPlugin extends AbstractUIPlugin {
     preferences.put(TerminatorPreferences.FOREGROUND_COLOR, NEAR_BLACK);
     preferences.put(TerminatorPreferences.CURSOR_COLOR, Color.BLUE);
     preferences.put(TerminatorPreferences.SELECTION_COLOR, LIGHT_BLUE);
+    // Turn on font anti-aliasing
+    preferences.put(TerminatorPreferences.ANTI_ALIAS, Boolean.TRUE);
   }
   
   private void installTermInfoIn(final File directory) throws IOException {
