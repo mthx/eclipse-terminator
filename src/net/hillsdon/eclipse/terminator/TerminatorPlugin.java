@@ -37,10 +37,9 @@ public class TerminatorPlugin extends AbstractUIPlugin {
   @Override
   public void start(final BundleContext context) throws Exception {
     super.start(context);
-
+    
     DOT_DIR.mkdir();
     
-    initializeNativeLibraries();
     initializeLogging();
     initializeSignalMap();
     initializeTermInfo();
@@ -66,19 +65,6 @@ public class TerminatorPlugin extends AbstractUIPlugin {
     final File termInfoDir = new File(termInfoDirName);
     installTermInfoIn(new File(termInfoDir, "t"));
     installTermInfoIn(new File(termInfoDir, "74"));
-  }
-
-  /**
-   * Issues:
-   *  Linux only.
-   *  Make the library loading code more flexible so we can use OSGI's Bundle-NativeCode.
-   */
-  private void initializeNativeLibraries() throws IOException {
-    final File libsDir = createDotSubDirectory("libs", true);
-    System.setProperty("org.jessies.libraryDirectories", libsDir.toString());
-    copyLibToLibsDir(libsDir, "libsalma-hayek.so");
-    copyLibToLibsDir(libsDir, "libpty.so");
-    copyLibToLibsDir(libsDir, "libposix.so");
   }
 
   /**
@@ -148,18 +134,6 @@ public class TerminatorPlugin extends AbstractUIPlugin {
         FileUtilities.close(out);
         FileUtilities.close(in);
       }
-    }
-  }
-
-  private void copyLibToLibsDir(final File libDir, final String libName) throws IOException {
-    FileOutputStream out = new FileOutputStream(new File(libDir, libName));
-    InputStream in = getClass().getResourceAsStream("/" + libName);
-    try {
-      copy(in, out);
-    }
-    finally {
-      FileUtilities.close(out);
-      FileUtilities.close(in);
     }
   }
 
