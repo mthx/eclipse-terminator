@@ -8,8 +8,6 @@ import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.FlavorEvent;
 import java.awt.datatransfer.FlavorListener;
-import java.io.File;
-import java.io.IOException;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
@@ -17,7 +15,6 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.awt.SWT_AWT;
 import org.eclipse.swt.events.FocusAdapter;
 import org.eclipse.swt.events.FocusEvent;
-import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
