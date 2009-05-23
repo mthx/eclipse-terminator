@@ -3,6 +3,7 @@ There's probably a whole load of things I've not thought of yet but here goes.
 == Short-term todos
 - [*] Crash when running a second Eclipse
     - Due to blatting native libs?
+    - Working on using Bundle-NativeCode.
 
 == Blocking Linux release
 - Starred short-term todos.
@@ -12,15 +13,16 @@ There's probably a whole load of things I've not thought of yet but here goes.
 == Blocking Mac OS/Windows release
 - Binaries (are there cross-platform jessies.org nightlies we can copy from?).
 - Determine if we really need 1.6 (issue for Macs?)
-- Cross-platform impl of getCwdOfTerminalIfPossible.
 
 == Other
+- Add support for Find - consider Firefox style.
 - GTK LAF hits this: https://bugs.launchpad.net/ubuntu/+source/libxcb/+bug/87947
    - Enable for other platforms?  Enable when fix can be detected?
    - Only real impact is that scrollbars look out of place.
 - Would be nice if Ctrl-W didn't close the active editor in Eclipse when
   the terminator view is focused.  This makes :split windows in vim
-  pretty much unusable.
+  pretty much unusable. This can be fixed by changing the key binding to
+  'Editing Text'.  Add to FAQ?
 - If using as fast view (?) then restore doesn't redraw.
 - Maximise loses focus from terminal.
 - Fonts look ugly compared to gnome-terminal.
