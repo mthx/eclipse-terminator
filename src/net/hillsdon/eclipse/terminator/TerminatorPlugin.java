@@ -1,17 +1,20 @@
 package net.hillsdon.eclipse.terminator;
 
-import java.awt.Color;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
+import net.hillsdon.eclipse.terminator.preferences.PreferenceInitializer;
+
+import org.eclipse.jface.preference.IPreferenceStore;
+import org.eclipse.jface.util.IPropertyChangeListener;
+import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 
 import terminator.Terminator;
-import terminator.TerminatorPreferences;
 import e.util.FileUtilities;
 
 /**
@@ -27,16 +30,15 @@ public class TerminatorPlugin extends AbstractUIPlugin {
   
   public static final String ID = "net.hillsdon.eclipse.terminator";
 
-  // Copied from TerminatorPrefererences.  Perhaps we should model 'ColorScheme' explicitly.
-  private static final Color LIGHT_BLUE = new Color(0xb3d4ff);
-  private static final Color NEAR_BLACK = new Color(0x181818);
-  
   private static final String HOME_DIR = System.getProperty("user.home");
   private static final File DOT_DIR = new File(HOME_DIR, ".terminator");
+
+  private static TerminatorPlugin _instance;
 
   @Override
   public void start(final BundleContext context) throws Exception {
     super.start(context);
+    _instance = this;
     
     DOT_DIR.mkdir();
     
@@ -45,7 +47,17 @@ public class TerminatorPlugin extends AbstractUIPlugin {
     initializeTermInfo();
     initializePreferences();
   }
+  
+  @Override
+  public void stop(BundleContext context) throws Exception {
+    _instance = null;
+    super.stop(context);
+  }
 
+  public static TerminatorPlugin getInstance() {
+    return _instance;
+  }
+  
   private void initializeSignalMap() {
     // This is not possible to get right from Java.  See the ruby in bin/terminator.
     // Only used to improve reporting of received signals, "" is fine (unset -> NPE).
@@ -109,16 +121,15 @@ public class TerminatorPlugin extends AbstractUIPlugin {
   }
 
   private void initializePreferences() {
-    final File optionsFile = new File(DOT_DIR, "options");
-    System.setProperty("org.jessies.terminator.optionsFile", optionsFile.toString());
-    TerminatorPreferences preferences = Terminator.getPreferences();
-    // Change the default color scheme to one that fits in better within the workspace.
-    preferences.put(TerminatorPreferences.BACKGROUND_COLOR, Color.WHITE);
-    preferences.put(TerminatorPreferences.FOREGROUND_COLOR, NEAR_BLACK);
-    preferences.put(TerminatorPreferences.CURSOR_COLOR, Color.BLUE);
-    preferences.put(TerminatorPreferences.SELECTION_COLOR, LIGHT_BLUE);
-    // Turn on font anti-aliasing
-    preferences.put(TerminatorPreferences.ANTI_ALIAS, Boolean.TRUE);
+    // We'll fail to read from it but that doesn't matter.
+    System.setProperty("org.jessies.terminator.optionsFile", "");
+    final IPreferenceStore store = getPreferenceStore();
+    store.addPropertyChangeListener(new IPropertyChangeListener() {
+      public void propertyChange(PropertyChangeEvent event) {
+        PreferenceInitializer.copyFromEclipseToTerminator(store, Terminator.getPreferences());
+      }
+    });
+    PreferenceInitializer.copyFromEclipseToTerminator(store, Terminator.getPreferences());
   }
   
   private void installTermInfoIn(final File directory) throws IOException {

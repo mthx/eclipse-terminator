@@ -24,10 +24,11 @@ import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 import org.jessies.os.Posix;
 
-import e.util.ProcessUtilities;
-
+import terminator.TerminatorPreferences;
 import terminator.view.JTerminalPane;
 import terminator.view.TerminalPaneHost;
+import e.util.Preferences;
+import e.util.ProcessUtilities;
 
 /**
  * A JTerminal pane that can be installed in a SWT composite.
@@ -58,12 +59,21 @@ public class TerminatorEmbedding {
   private final TerminalPaneHost _host;
   private final JTerminalPane _terminalPane;
   private final Set<PasteEnabledListener> _pasteEnabledListeners = new LinkedHashSet<PasteEnabledListener>();
+  private final TerminatorPreferences _preferences;
+  private final Preferences.Listener _preferencesListener = new Preferences.Listener() {
+    public void preferencesChanged() {
+      System.err.println(_preferences.getFont("font"));
+      _terminalPane.optionsDidChange();
+    }
+  };
   private Composite _composite;
   private Button _swtFocusControl;
+  
 
-  public TerminatorEmbedding(final JTerminalPane terminal, final TerminalPaneHost host, final EventThreads eventThreads) {
+  public TerminatorEmbedding(final JTerminalPane terminal, final TerminalPaneHost host, final TerminatorPreferences preferences, final EventThreads eventThreads) {
     _terminalPane = terminal;
     _host = host;
+    _preferences = preferences;
     _eventThreads = eventThreads;
   }
   
@@ -98,6 +108,8 @@ public class TerminatorEmbedding {
         });
       }
     });
+    
+    _preferences.addPreferencesListener(_preferencesListener);
   }
 
   private boolean isEclipseHandledNavigationEvent(Event keyboardEvent) {
@@ -177,6 +189,7 @@ public class TerminatorEmbedding {
   }
   
   public void dispose() {
+    _preferences.removePreferencesListener(_preferencesListener);
     _eventThreads.runSwingFromSWT(new Runnable() {
       public void run() {
         _terminalPane.doCloseAction();

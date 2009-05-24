@@ -14,6 +14,8 @@ import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.handlers.IHandlerService;
 import org.eclipse.ui.part.ViewPart;
 
+import terminator.Terminator;
+import terminator.TerminatorPreferences;
 import terminator.view.JTerminalPane;
 
 /**
@@ -42,10 +44,11 @@ public class TerminatorView extends ViewPart {
   public void createPartControl(final Composite parent) {
     String secondaryId = getViewSite().getSecondaryId();
     final IWorkbenchWindow window = getViewSite().getWorkbenchWindow();
+    final TerminatorPreferences preferences = Terminator.getPreferences();
     final JTerminalPane terminalPane = JTerminalPane.newShellWithName(null, getWorkingDirectoryFromViewId(secondaryId));
     final EventThreads eventThreads = new EventThreads(parent, terminalPane);
     final ViewTerminatorHost host = new ViewTerminatorHost(this, eventThreads);
-    _embedding = new TerminatorEmbedding(terminalPane, host, eventThreads);
+    _embedding = new TerminatorEmbedding(terminalPane, host, preferences, eventThreads);
     _embedding.install(parent);
     
     addAction(new CopyAction(window, _embedding));

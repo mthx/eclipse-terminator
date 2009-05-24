@@ -70,5 +70,25 @@
                tooltip="Open terminal view for the current selection"/>
       </actionSet>
    </extension>
+ 
+   <extension
+         point="org.eclipse.ui.preferencePages">
+      <page 
+            class="net.hillsdon.eclipse.terminator.preferences.TerminatorPreferencePage"
+            id="net.hillsdon.eclipse.terminator.preferences.TerminatorPreferencePage"
+            name="Terminator">
+      </page>
+      <page category="net.hillsdon.eclipse.terminator.preferences.TerminatorPreferencePage"
+            class="net.hillsdon.eclipse.terminator.preferences.FontAndColorsPreferencePage"
+            id="net.hillsdon.eclipse.terminator.preferences.ColorsPreferencePage"
+            name="Fonts and Colors">
+      </page>
+   </extension>
+   <extension
+         point="org.eclipse.core.runtime.preferences">
+      <initializer
+            class="net.hillsdon.eclipse.terminator.preferences.PreferenceInitializer">
+      </initializer>
+   </extension>
 
 </plugin>
