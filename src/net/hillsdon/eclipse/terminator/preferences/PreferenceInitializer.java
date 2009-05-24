@@ -53,7 +53,7 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
   static {
     COLOR_PREFERENCE_DEFAULTS.put(TerminatorPreferences.FOREGROUND_COLOR, toRGB(NEAR_BLACK));
     COLOR_PREFERENCE_DEFAULTS.put(TerminatorPreferences.BACKGROUND_COLOR, toRGB(Color.WHITE));
-    COLOR_PREFERENCE_DEFAULTS.put(TerminatorPreferences.CURSOR_COLOR, toRGB(Color.BLUE));
+    COLOR_PREFERENCE_DEFAULTS.put(TerminatorPreferences.CURSOR_COLOR, toRGB(Color.BLACK));
     COLOR_PREFERENCE_DEFAULTS.put(TerminatorPreferences.SELECTION_COLOR, toRGB(LIGHT_BLUE));
   }
 
