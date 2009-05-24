@@ -8,6 +8,8 @@ import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.FlavorEvent;
 import java.awt.datatransfer.FlavorListener;
+import java.io.File;
+import java.io.IOException;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
@@ -132,7 +134,17 @@ public class TerminatorEmbedding {
     if (foregroundPid < 0) {
       return null;
     }
-    return ProcessUtilities.findCurrentWorkingDirectory(foregroundPid);
+    String cwd = ProcessUtilities.findCurrentWorkingDirectory(foregroundPid);
+    // The impl. doesn't canonicalise, which doesn't help when we restore... 
+    if (cwd.startsWith("/proc/")) {
+      try {
+        return new File(cwd).getCanonicalPath();
+      }
+      catch (IOException ex) {
+        return null;
+      }
+    }
+    return cwd;
   }
 
   public void copy() {
