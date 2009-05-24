@@ -79,7 +79,7 @@ public class TerminatorView extends ViewPart {
   public static String getWorkingDirectoryFromViewId(final String id) {
     if (id != null) {
       String[] parts = id.split("\\|");
-      if (parts.length == 2 && !parts[1].isEmpty()) {
+      if (parts.length == 2 && parts[1].length() > 0) {
         return parts[1];
       }
     }

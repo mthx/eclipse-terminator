@@ -12,6 +12,7 @@ import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
+import org.jessies.os.OS;
 import org.osgi.framework.BundleContext;
 
 import terminator.Terminator;
@@ -31,7 +32,6 @@ public class TerminatorPlugin extends AbstractUIPlugin {
   public static final String ID = "net.hillsdon.eclipse.terminator";
 
   private static final String HOME_DIR = System.getProperty("user.home");
-  private static final File DOT_DIR = new File(HOME_DIR, ".terminator");
 
   private static TerminatorPlugin _instance;
 
@@ -40,14 +40,12 @@ public class TerminatorPlugin extends AbstractUIPlugin {
     super.start(context);
     _instance = this;
     
-    DOT_DIR.mkdir();
-    
     initializeLogging();
     initializeSignalMap();
     initializeTermInfo();
     initializePreferences();
   }
-  
+
   @Override
   public void stop(BundleContext context) throws Exception {
     _instance = null;
@@ -56,6 +54,15 @@ public class TerminatorPlugin extends AbstractUIPlugin {
 
   public static TerminatorPlugin getInstance() {
     return _instance;
+  }
+  
+  private void initializeLogging() {
+    // Ideally we'd redirect this logging to the Eclipse error log - need to 
+    // give the logging system in salma-hayek pluggable backends.
+    System.setProperty("e.util.Log.filename", OS.isWindows() ? "nul" : "/dev/null");
+    // This logs all terminal output.  I'm not happy enabling this without UI
+    // that makes it really obvious what's going on, so disable for now.
+    System.setProperty("org.jessies.terminator.logDirectory", "");
   }
   
   private void initializeSignalMap() {
@@ -77,47 +84,6 @@ public class TerminatorPlugin extends AbstractUIPlugin {
     final File termInfoDir = new File(termInfoDirName);
     installTermInfoIn(new File(termInfoDir, "t"));
     installTermInfoIn(new File(termInfoDir, "74"));
-  }
-
-  /**
-   * Issues:
-   *  We can't get at the pid from here so names don't match (do we care?)
-   *  We should probably use the Eclipse error log for things that are likely bugs.
-   *  Does terminator ever clean up these files?
-   */
-  private void initializeLogging() {
-    try {
-      final File logsDir = createDotSubDirectory("logs", true);
-      System.setProperty("org.jessies.terminator.logDirectory", logsDir.toString());
-      final File logFile = File.createTempFile("terminator-", ".log", logsDir);
-      System.setProperty("e.util.Log.filename", logFile.toString());
-    }
-    catch (IOException ex) {
-      // It'll end up on the console then.
-    }
-  }
-  
-  private File createDotSubDirectory(final String name, final boolean secure) throws IOException {
-    final File dir = new File(DOT_DIR, name);
-    if (!dir.exists()) {
-      if (!dir.mkdir()) {
-        throw new IOException("Failed to create " + dir);
-      }
-    }
-    if (secure) {
-      chmod700(dir);
-    }
-    return dir;
-  }
-
-  private void chmod700(final File file) {
-    // Is this for real?  Note we don't check errors for now.
-    file.setExecutable(false, false);
-    file.setReadable(false, false);
-    file.setWritable(false, false);
-    file.setExecutable(true, true);
-    file.setReadable(true, true);
-    file.setWritable(true, true);
   }
 
   private void initializePreferences() {
