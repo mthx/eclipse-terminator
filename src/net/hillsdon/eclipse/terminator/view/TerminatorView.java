@@ -1,5 +1,6 @@
 package net.hillsdon.eclipse.terminator.view;
 
+import java.io.File;
 import java.util.UUID;
 
 import net.hillsdon.eclipse.terminator.view.actions.ClearScrollbackAction;
@@ -10,7 +11,10 @@ import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.commands.ActionHandler;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.ui.IMemento;
+import org.eclipse.ui.IViewSite;
 import org.eclipse.ui.IWorkbenchWindow;
+import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.handlers.IHandlerService;
 import org.eclipse.ui.part.ViewPart;
 
@@ -26,12 +30,11 @@ import terminator.view.JTerminalPane;
 public class TerminatorView extends ViewPart {
 
   public static final String ID = "net.hillsdon.eclipse.terminator.view.TerminatorView";
+
+  private static final String MEMENTO_WORKING_DIRECTORY_KEY = "working-directory";
   
   private TerminatorEmbedding _embedding;
-
-  public String getCwdOfTerminalIfPossible() {
-    return _embedding.getCwdOfTerminalIfPossible();
-  }
+  private String _initialWorkingDirectory;
 
   /**
    * Overriden to increase visibility.
@@ -42,10 +45,9 @@ public class TerminatorView extends ViewPart {
   }
    
   public void createPartControl(final Composite parent) {
-    String secondaryId = getViewSite().getSecondaryId();
     final IWorkbenchWindow window = getViewSite().getWorkbenchWindow();
     final TerminatorPreferences preferences = Terminator.getPreferences();
-    final JTerminalPane terminalPane = JTerminalPane.newShellWithName(null, getWorkingDirectoryFromViewId(secondaryId));
+    final JTerminalPane terminalPane = JTerminalPane.newShellWithName(null, _initialWorkingDirectory);
     final EventThreads eventThreads = new EventThreads(parent, terminalPane);
     final ViewTerminatorHost host = new ViewTerminatorHost(this, eventThreads);
     _embedding = new TerminatorEmbedding(terminalPane, host, preferences, eventThreads);
@@ -54,6 +56,32 @@ public class TerminatorView extends ViewPart {
     addAction(new CopyAction(window, _embedding));
     addAction(new PasteAction(window, _embedding));
     addAction(new ClearScrollbackAction(window, _embedding));
+  }
+  
+  @Override
+  public void init(final IViewSite site, final IMemento memento) throws PartInitException {
+    super.init(site, memento);
+    _initialWorkingDirectory = getInitialWorkingDirectory(memento);
+  }
+  
+  @Override
+  public void saveState(final IMemento memento) {
+    super.saveState(memento);
+    memento.putString(MEMENTO_WORKING_DIRECTORY_KEY, getCwdOfTerminalIfPossible());
+  }
+
+  private String getInitialWorkingDirectory(final IMemento memento) {
+    // First try restore, then new view.
+    String directory = memento == null ? null : memento.getString(MEMENTO_WORKING_DIRECTORY_KEY);
+    if (directory == null) {
+      String secondaryId = getViewSite().getSecondaryId();
+      directory = getWorkingDirectoryFromViewId(secondaryId);
+    }
+    return directory != null && new File(directory).exists() ? directory : null;
+  }
+
+  public String getCwdOfTerminalIfPossible() {
+    return _embedding.getCwdOfTerminalIfPossible();
   }
   
   /**
