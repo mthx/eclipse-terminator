@@ -11,6 +11,7 @@ There's probably a whole load of things I've not thought of yet but here goes.
 - Binaries (are there cross-platform jessies.org nightlies we can copy from?).
 
 == Other
+- Make salma-hayek logging log to Eclipse error log.
 - Activity monitor - italic table title as for JUnit?
 - Fonts: the default 'logical' font 'Monospaced' isn't actually in the font
   dialog.  The actual(?) Linux font 'Monospace' (note no 'd') doesn't seem to
