@@ -15,4 +15,13 @@ Bundle-ClassPath: lib/salma-hayek.jar,
  .
 Bundle-Activator: net.hillsdon.eclipse.terminator.TerminatorPlugin
 Bundle-ActivationPolicy: lazy
-Bundle-NativeCode: libpty.so; libposix.so; osname = linux; processor=x86
+Bundle-NativeCode: native/linux/x86/libpty.so;
+                   native/linux/x86/libposix.so;
+                   osname = Linux; processor=x86,
+                   native/linux/amd64/libpty.so;
+                   native/linux/amd64/libposix.so;
+                   osname = Linux; processor=amd64,
+                   native/windows/x86/pty.dll;
+                   native/windows/x86/posix.dll;
+                   native/windows/x86/mingwm10.dll;
+                   osname = Win32; processor=x86
