@@ -1,6 +1,9 @@
 package net.hillsdon.eclipse.terminator.view;
 
 import java.io.File;
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
+import java.net.URLEncoder;
 import java.util.UUID;
 
 import net.hillsdon.eclipse.terminator.view.actions.ClearScrollbackAction;
@@ -123,14 +126,24 @@ public class TerminatorView extends ViewPart {
     if (workingDirectory == null) {
       return "";
     }
-    return workingDirectory.replaceAll(":", "\u0000");
+    try {
+      return URLEncoder.encode(workingDirectory, "UTF-8");
+    }
+    catch (UnsupportedEncodingException e) {
+      throw new RuntimeException(e);
+    }
   }
   
   private static String decodeWorkingDirectory(final String encodedWorkingDirectory) {
     if (encodedWorkingDirectory.length() == 0) {
       return null;
     }
-    return encodedWorkingDirectory.replaceAll("\u0000", ":");
+    try {
+      return URLDecoder.decode(encodedWorkingDirectory, "UTF-8");
+    }
+    catch (UnsupportedEncodingException e) {
+      throw new RuntimeException(e);
+    }
   }
  
 }
