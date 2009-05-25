@@ -107,15 +107,30 @@ public class TerminatorView extends ViewPart {
   public static String getWorkingDirectoryFromViewId(final String id) {
     if (id != null) {
       String[] parts = id.split("\\|");
-      if (parts.length == 2 && parts[1].length() > 0) {
-        return parts[1];
+      if (parts.length == 2) {
+        return decodeWorkingDirectory(parts[1]);
       }
     }
     return null;
   }
 
   public static String createSecondaryId(final String workingDirectory) {
-    return UUID.randomUUID().toString() + "|" + (workingDirectory == null ? "" : workingDirectory);
+    return UUID.randomUUID().toString() + "|" + encodeWorkingDirectory(workingDirectory);
+  }
+
+  private static String encodeWorkingDirectory(final String workingDirectory) {
+    // Although it doesn't say on the Javadoc colons in view ids aren't allowed.
+    if (workingDirectory == null) {
+      return "";
+    }
+    return workingDirectory.replaceAll(":", "\u0000");
+  }
+  
+  private static String decodeWorkingDirectory(final String encodedWorkingDirectory) {
+    if (encodedWorkingDirectory.length() == 0) {
+      return null;
+    }
+    return encodedWorkingDirectory.replaceAll("\u0000", ":");
   }
  
 }

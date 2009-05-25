@@ -11,6 +11,10 @@ public class TestTerminatorView extends TestCase {
     assertNull(getWorkingDirectoryFromViewId(TerminatorView.ID));
     
     assertEquals("/tmp", getWorkingDirectoryFromViewId(createSecondaryId("/tmp")));
+    String windowsSecondaryId = createSecondaryId("c:\\Program Files\\Wibble");
+    // Apparently this is a no-no so we have to encode.
+    assertFalse(windowsSecondaryId.contains(":"));
+    assertEquals("c:\\Program Files\\Wibble", getWorkingDirectoryFromViewId(windowsSecondaryId));
   }
   
 }
