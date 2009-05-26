@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 
+import glob
 import re
 import shutil
 import subprocess
@@ -48,19 +49,14 @@ MSI_FILE_RE=re.compile("(.*?)(file[0-9]+)(.*)")
 
 def extract_windows(msi, outdir):
     # We don't really understand msi files but this will do for now...
-    print "Grabbing msi string data"
-    strings = subprocess.Popen(["7z", "e", "-i!*StringData", "-so",  msi], stdout=subprocess.PIPE).communicate()[0]
-    print "Extracting cab from msi"
     subprocess.call(["7z", "e", "-i!project.cab", "-o" + DATA_DIRECTORY, "-y", msi])
-    for string in strings.split("|"):
-        match = MSI_FILE_RE.match(string)
-        if match:
-            external = match.group(1)
-            internal = match.group(2)
-            if os.path.splitext(external)[1] == '.dll':
-                print "Extracting dll " + external
-                subprocess.call(["7z", "e", "-i!" + internal, "-o" + WINDOWS_X86_OUT, os.path.join(DATA_DIRECTORY, "project.cab")])
-                os.rename(os.path.join(WINDOWS_X86_OUT, internal), os.path.join(WINDOWS_X86_OUT, external))
+    subprocess.call(["7z", "e", "-i!*", "-o" + DATA_DIRECTORY, "-y", os.path.join(DATA_DIRECTORY, "project.cab")])
+    for f in glob.glob(os.path.join(DATA_DIRECTORY, "*")):
+      output = subprocess.Popen(["file", f], stdout=subprocess.PIPE).communicate()[0]
+      if "DLL" in output:
+        dump = subprocess.Popen(["winedump", "-j", "export", "dump", f], stdout=subprocess.PIPE).communicate()[0]
+        name = [line[line.rfind(' ') + 1:] for line in dump.split("\n") if line.endswith(".dll")][0]
+        shutil.copy(f, os.path.join(WINDOWS_X86_OUT, name))
 
 if __name__ == "__main__":
     if not os.path.exists(DATA_DIRECTORY):
