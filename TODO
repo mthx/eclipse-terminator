@@ -13,6 +13,12 @@ There's probably a whole load of things I've not thought of yet but here goes.
 
 == Blocking Mac OS/Windows release
 - Binaries (are there cross-platform jessies.org nightlies we can copy from?).
+- Error when no SHELL env. varible set (obv. much more likely on Windows)
+    java.lang.NullPointerException
+      at java.lang.String.<init>(Unknown Source)
+      at terminator.terminal.TerminalControl.<clinit>(TerminalControl.java:29)
+      at terminator.view.JTerminalPane.newShellWithName(JTerminalPane.java:91)
+      at net.hillsdon.eclipse.terminator.view.TerminatorView.createPartControl(TerminatorView.java:53)
 
 == Other
 - Make salma-hayek logging log to Eclipse error log.
