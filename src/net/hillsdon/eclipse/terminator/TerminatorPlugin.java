@@ -29,6 +29,14 @@ import e.util.FileUtilities;
  */
 public class TerminatorPlugin extends AbstractUIPlugin {
   
+  static {
+    if (OS.isWindows()) {
+      // The terminator native libraries depend on this.  Because we're 
+      // using Bundle-Native code we need to be sure to load it first.
+      System.loadLibrary("mingwm10");
+    }
+  }
+  
   public static final String ID = "net.hillsdon.eclipse.terminator";
 
   private static final String HOME_DIR = System.getProperty("user.home");
