@@ -24,4 +24,10 @@ Bundle-NativeCode: native/linux/x86/libpty.so;
                    native/windows/x86/pty.dll;
                    native/windows/x86/posix.dll;
                    native/windows/x86/mingwm10.dll;
-                   osname = Win32; processor=x86
+                   osname = Win32; processor=x86,
+                   native/osx/universal/libposix.jnilib;
+                   native/osx/universal/libpty.jnilib;
+                   osname = macosx; processor=x86,
+                   native/osx/universal/libposix.jnilib;
+                   native/osx/universal/libpty.jnilib;
+                   osname = macosx; processor=ppc
