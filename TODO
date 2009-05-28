@@ -12,8 +12,10 @@ There's probably a whole load of things I've not thought of yet but here goes.
 - Ask whether using the Terminator name and icon is reasonable.
 
 == Blocking Mac OS/Windows release
-- Binaries (are there cross-platform jessies.org nightlies we can copy from?).
-- Error when no SHELL env. varible set (obv. much more likely on Windows)
+- Binaries (now sucked out of their installers)
+- OSX Bundle-NativeCode lines + testing.
+- Ability to load Windows binary - dependency issue - cygwin?  Can't seem to load that directly.  What do jessies do?
+- Error when no SHELL env. varible set (obv. only likely on Windows)
     java.lang.NullPointerException
       at java.lang.String.<init>(Unknown Source)
       at terminator.terminal.TerminalControl.<clinit>(TerminalControl.java:29)
