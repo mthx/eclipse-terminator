@@ -32,7 +32,9 @@ def url2file(url):
     f.close()
 
 def extract_osx(dmg, outdir):
-    pass
+    subprocess.call(["7z", "e", "-i!2.hfsx", "-o" + DATA_DIRECTORY, "-y", dmg])
+    for file in ("Terminator/Terminator.app/Contents/Resources/terminator/.generated/universal_Darwin/lib/libpty.jnilib", "Terminator/Terminator.app/Contents/Resources/salma-hayek/.generated/universal_Darwin/lib/libposix.jnilib"):
+        subprocess.call(["7z", "e", "-i!" + file, "-o" + outdir, "-y", os.path.join(DATA_DIRECTORY, "2.hfsx")])
 
 def extract_linux(deb, outdir):
     data_file = os.path.join(DATA_DIRECTORY, "data.tar.gz")
@@ -64,8 +66,8 @@ if __name__ == "__main__":
     for url in [WINDOWS_X86_URL, LINUX_X86_URL, LINUX_AMD64_URL, OSX_URL]:
         pass #url2file(url)
 
-    extract_windows(os.path.join(DATA_DIRECTORY, "terminator.msi"), WINDOWS_X86_OUT)
-    extract_linux(os.path.join(DATA_DIRECTORY, "org.jessies.terminator.i386.deb"), LINUX_X86_OUT)
-    extract_linux(os.path.join(DATA_DIRECTORY, "org.jessies.terminator.amd64.deb"), LINUX_AMD64_OUT)
+    #extract_windows(os.path.join(DATA_DIRECTORY, "terminator.msi"), WINDOWS_X86_OUT)
+    #extract_linux(os.path.join(DATA_DIRECTORY, "org.jessies.terminator.i386.deb"), LINUX_X86_OUT)
+    #extract_linux(os.path.join(DATA_DIRECTORY, "org.jessies.terminator.amd64.deb"), LINUX_AMD64_OUT)
     extract_osx(os.path.join(DATA_DIRECTORY, "terminator.dmg"), OSX_OUT)
 
