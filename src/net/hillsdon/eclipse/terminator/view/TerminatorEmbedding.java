@@ -64,7 +64,6 @@ public class TerminatorEmbedding {
   private final TerminatorPreferences _preferences;
   private final Preferences.Listener _preferencesListener = new Preferences.Listener() {
     public void preferencesChanged() {
-      System.err.println(_preferences.getFont("font"));
       _terminalPane.optionsDidChange();
     }
   };
