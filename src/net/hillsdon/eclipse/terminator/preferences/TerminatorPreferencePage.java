@@ -12,6 +12,8 @@ import terminator.TerminatorPreferences;
 
 public class TerminatorPreferencePage extends FieldEditorPreferencePage implements IWorkbenchPreferencePage {
 
+  public static final String ID = "net.hillsdon.eclipse.terminator.preferences.TerminatorPreferencePage";
+
   public TerminatorPreferencePage() {
     super(GRID);
     setPreferenceStore(TerminatorPlugin.getInstance().getPreferenceStore());

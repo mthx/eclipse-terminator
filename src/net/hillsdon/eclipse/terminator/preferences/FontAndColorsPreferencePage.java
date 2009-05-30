@@ -13,6 +13,8 @@ import terminator.TerminatorPreferences;
 
 public class FontAndColorsPreferencePage extends FieldEditorPreferencePage implements IWorkbenchPreferencePage {
 
+  public static final String ID = "net.hillsdon.eclipse.terminator.preferences.ColorsPreferencePage";
+
   public FontAndColorsPreferencePage() {
     super(GRID); 
     setPreferenceStore(TerminatorPlugin.getInstance().getPreferenceStore());

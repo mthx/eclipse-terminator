@@ -13,6 +13,7 @@ import net.hillsdon.eclipse.terminator.view.actions.ShowPreferencesAction;
 
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.IMenuManager;
+import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.commands.ActionHandler;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IMemento;
@@ -60,6 +61,7 @@ public class TerminatorView extends ViewPart {
     addAction(new CopyAction(window, _embedding));
     addAction(new PasteAction(window, _embedding));
     addAction(new ClearScrollbackAction(window, _embedding));
+    addSeparator();
     addAction(new ShowPreferencesAction(window));
   }
   
@@ -91,13 +93,20 @@ public class TerminatorView extends ViewPart {
   
   /**
    * We want a context menu rather than the view menu but I can't figure out how
-   * to get it to display over the Swing arey on Linux (apparently it works on Windows). 
+   * to get it to display over the Swing area on Linux (apparently it works on Windows). 
    */
   private void addAction(final IAction action) {
-    final IHandlerService service = (IHandlerService) getViewSite().getService(IHandlerService.class);
-    final IMenuManager menuManager = getViewSite().getActionBars().getMenuManager();
-    menuManager.add(action);
+    getMenuManager().add(action);
+    IHandlerService service = (IHandlerService) getViewSite().getService(IHandlerService.class);
     service.activateHandler(action.getActionDefinitionId(), new ActionHandler(action));
+  }
+
+  private void addSeparator() {
+    getMenuManager().add(new Separator());
+  }
+  
+  private IMenuManager getMenuManager() {
+    return getViewSite().getActionBars().getMenuManager();
   }
 
   @Override
