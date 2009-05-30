@@ -9,6 +9,7 @@ import java.util.UUID;
 import net.hillsdon.eclipse.terminator.view.actions.ClearScrollbackAction;
 import net.hillsdon.eclipse.terminator.view.actions.CopyAction;
 import net.hillsdon.eclipse.terminator.view.actions.PasteAction;
+import net.hillsdon.eclipse.terminator.view.actions.ShowPreferencesAction;
 
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.IMenuManager;
@@ -59,6 +60,7 @@ public class TerminatorView extends ViewPart {
     addAction(new CopyAction(window, _embedding));
     addAction(new PasteAction(window, _embedding));
     addAction(new ClearScrollbackAction(window, _embedding));
+    addAction(new ShowPreferencesAction(window));
   }
   
   @Override
