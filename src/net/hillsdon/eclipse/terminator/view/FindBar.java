@@ -82,7 +82,7 @@ public class FindBar {
     addAction(_toolbar, new FindPreviousAction(_finder));
     addAction(_toolbar, new FindNextAction(_finder));
     
-    _statusLabel = createLabel(_toolbar, "This is the status text", 25);
+    _statusLabel = createLabel(_toolbar, "", 25);
   }
 
   private void setStatus(final String text) {
