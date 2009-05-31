@@ -37,7 +37,9 @@ public class FindBar {
   private Text _text;
   private Composite _parent;
   private GridData _layoutData;
+  private ToolItem _statusLabel;
 
+  private ToolBar _toolbar;
 
   public FindBar(final Finder finder) {
     _finder = finder;
@@ -45,11 +47,11 @@ public class FindBar {
 
   public void install(final Composite parent) {
     _parent = parent;
-    ToolBar toolbar = new ToolBar(parent, SWT.FLAT | SWT.HORIZONTAL | SWT.RIGHT);
+    _toolbar = new ToolBar(parent, SWT.FLAT | SWT.HORIZONTAL | SWT.RIGHT);
     _layoutData = new GridData(SWT.FILL, SWT.BOTTOM, true, false, 2, 1);
     _layoutData.exclude = true;
-    toolbar.setLayoutData(_layoutData);
-    ToolItem close = new ToolItem(toolbar, SWT.PUSH);
+    _toolbar.setLayoutData(_layoutData);
+    ToolItem close = new ToolItem(_toolbar, SWT.PUSH);
     close.setImage(CANCEL_IMAGE_DESCRIPTOR.createImage());
     close.addSelectionListener(new SelectionAdapter() {
       public void widgetSelected(final SelectionEvent e) {
@@ -58,18 +60,11 @@ public class FindBar {
     });
     close.setToolTipText("Close Find Bar");
 
-    ToolItem labelItem = new ToolItem(toolbar, SWT.SEPARATOR);
-    Composite labelComposite = new Composite(toolbar, SWT.NONE);
-    labelComposite.setLayout(new GridLayout());
-    Label label = new Label(labelComposite, SWT.NONE);
-    label.setLayoutData(new GridData(GridData.FILL_BOTH));
-    label.setText("Find:");
-    labelItem.setControl(labelComposite);
-    labelItem.setWidth(labelComposite.computeSize(SWT.DEFAULT, SWT.DEFAULT).x);
+    createLabel(_toolbar, "Find:", 5);
     
-    ToolItem textItem = new ToolItem(toolbar, SWT.SEPARATOR);
+    ToolItem textItem = new ToolItem(_toolbar, SWT.SEPARATOR);
     textItem.setWidth(200);
-    _text = new Text(toolbar, SWT.SINGLE | SWT.BORDER);
+    _text = new Text(_toolbar, SWT.SINGLE | SWT.BORDER);
     _text.addSelectionListener(new SelectionAdapter() {
       public void widgetDefaultSelected(final SelectionEvent e) {
         find();
@@ -84,8 +79,35 @@ public class FindBar {
     });
     textItem.setControl(_text);
     
-    addAction(toolbar, new FindPreviousAction(_finder));
-    addAction(toolbar, new FindNextAction(_finder));
+    addAction(_toolbar, new FindPreviousAction(_finder));
+    addAction(_toolbar, new FindNextAction(_finder));
+    
+    _statusLabel = createLabel(_toolbar, "This is the status text", 25);
+  }
+
+  private void setStatus(final String text) {
+    if (!_statusLabel.isDisposed()) {
+      ((Label) ((Composite) _statusLabel.getControl()).getChildren()[0]).setText(text);
+      sizeToControlWidth(_statusLabel);
+    }
+  }
+  
+  private ToolItem createLabel(final ToolBar toolbar, final String text, final int marginLeft) {
+    ToolItem labelItem = new ToolItem(toolbar, SWT.SEPARATOR);
+    Composite labelComposite = new Composite(toolbar, SWT.NONE);
+    GridLayout layout = new GridLayout();
+    layout.marginLeft = marginLeft;
+    labelComposite.setLayout(layout);
+    Label label = new Label(labelComposite, SWT.NONE);
+    label.setLayoutData(new GridData(GridData.FILL_BOTH));
+    label.setText(text);
+    labelItem.setControl(labelComposite);
+    sizeToControlWidth(labelItem);
+    return labelItem;
+  }
+
+  private void sizeToControlWidth(final ToolItem labelItem) {
+    labelItem.setWidth(labelItem.getControl().computeSize(SWT.DEFAULT, SWT.DEFAULT).x);
   }
 
   private void addAction(final ToolBar toolbar, final IAction action) {
@@ -95,12 +117,16 @@ public class FindBar {
   }
 
   private void find() {
-    String regularExpression = _text.getText();
+    final String regularExpression = _text.getText();
     try {
-      _finder.find(regularExpression);
+      _finder.find(regularExpression, new FindCallback() {
+        public void statusChanged(final String text) {
+          setStatus(text);
+        }
+      });
     }
     catch (PatternSyntaxException ex) {
-      // Indicate error somehow.
+      setStatus(ex.getDescription());
     }
   }
 

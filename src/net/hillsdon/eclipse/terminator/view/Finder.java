@@ -1,5 +1,7 @@
 package net.hillsdon.eclipse.terminator.view;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 
@@ -24,13 +26,25 @@ public class Finder {
     _terminalPane = terminalPane;
   }
   
-  public void find(final String regularExpression) throws PatternSyntaxException {
+  public void find(final String regularExpression, final FindCallback callback) throws PatternSyntaxException {
     final Pattern pattern = createPattern(regularExpression);
+    if (pattern == null) {
+      callback.statusChanged("");
+    }
     _eventThreads.runSwingFromSWT(new Runnable() {
       public void run() {
         final TerminalView terminalView = _terminalPane.getTerminalView();
         final FindHighlighter findHighlighter = terminalView.getHighlighterOfClass(FindHighlighter.class);
         final JLabel hack = new JLabel();
+        hack.addPropertyChangeListener("text", new PropertyChangeListener() {
+          public void propertyChange(final PropertyChangeEvent evt) {
+            _eventThreads.runSWTFromSwing(new Runnable() {
+              public void run() {
+                callback.statusChanged(((String) evt.getNewValue()));
+              }
+            });
+          }
+        });
         findHighlighter.setPattern(terminalView, regularExpression, pattern, hack);
       }
     });
