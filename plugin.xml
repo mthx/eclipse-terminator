@@ -34,6 +34,10 @@
             categoryId="net.hillsdon.eclipse.terminator.category"
             name="Clear Scrollback"
             id="net.hillsdon.eclipse.terminator.edit.clearScrollback"/>
+      <command
+            categoryId="net.hillsdon.eclipse.terminator.category"
+            name="Find"
+            id="net.hillsdon.eclipse.terminator.toggleFindBar"/>
    </extension>
    <extension
          point="org.eclipse.ui.bindings">
@@ -53,6 +57,10 @@
                schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
                sequence="M1+Shift+K"
                commandId="net.hillsdon.eclipse.terminator.edit.clearScrollback"/>
+         <key
+               schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+               sequence="M1+Shift+F"
+               commandId="net.hillsdon.eclipse.terminator.toggleFindBar"/>
    </extension>
    <extension
          point="org.eclipse.ui.actionSets">

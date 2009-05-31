@@ -69,13 +69,15 @@ public class TerminatorEmbedding {
   };
   private Composite _composite;
   private Button _swtFocusControl;
+  private FindBar _findBar;
   
 
-  public TerminatorEmbedding(final JTerminalPane terminal, final TerminalPaneHost host, final TerminatorPreferences preferences, final EventThreads eventThreads) {
+  public TerminatorEmbedding(final JTerminalPane terminal, final TerminalPaneHost host, final TerminatorPreferences preferences, final EventThreads eventThreads, FindBar findBar) {
     _terminalPane = terminal;
     _host = host;
     _preferences = preferences;
     _eventThreads = eventThreads;
+    _findBar = findBar;
   }
   
   public void install(final Composite parent) {
@@ -83,6 +85,7 @@ public class TerminatorEmbedding {
     layout.marginHeight = 0;
     layout.marginWidth = 0;
     layout.horizontalSpacing = 0;
+    layout.verticalSpacing = 0;
     parent.setLayout(layout);
     
     // We need SWT-land to take the focus sometimes so we have a 0x0 (but not invisible) SWT control.
@@ -98,6 +101,9 @@ public class TerminatorEmbedding {
     panel.setLayout(new BorderLayout());
     frame.add(panel, BorderLayout.CENTER);
     panel.add(_terminalPane);
+    
+    _findBar.install(parent);
+    
     _terminalPane.start(_host);
 
     _composite.addFocusListener(new FocusAdapter() {
@@ -210,6 +216,10 @@ public class TerminatorEmbedding {
 
   public void setFocus() {
     _composite.setFocus();
+  }
+
+  public void toggleFindBar() {
+    _findBar.toggle();
   }
   
 }

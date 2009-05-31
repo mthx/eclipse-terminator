@@ -10,6 +10,7 @@ import net.hillsdon.eclipse.terminator.view.actions.ClearScrollbackAction;
 import net.hillsdon.eclipse.terminator.view.actions.CopyAction;
 import net.hillsdon.eclipse.terminator.view.actions.PasteAction;
 import net.hillsdon.eclipse.terminator.view.actions.ShowPreferencesAction;
+import net.hillsdon.eclipse.terminator.view.actions.ToggleFindBarAction;
 
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.IMenuManager;
@@ -55,12 +56,14 @@ public class TerminatorView extends ViewPart {
     final JTerminalPane terminalPane = JTerminalPane.newShellWithName(null, _initialWorkingDirectory);
     final EventThreads eventThreads = new EventThreads(parent, terminalPane);
     final ViewTerminatorHost host = new ViewTerminatorHost(this, eventThreads);
-    _embedding = new TerminatorEmbedding(terminalPane, host, preferences, eventThreads);
+    final FindBar findBar = new FindBar(new Finder(eventThreads, terminalPane));
+    _embedding = new TerminatorEmbedding(terminalPane, host, preferences, eventThreads, findBar);
     _embedding.install(parent);
     
     addAction(new CopyAction(window, _embedding));
     addAction(new PasteAction(window, _embedding));
     addAction(new ClearScrollbackAction(window, _embedding));
+    addAction(new ToggleFindBarAction(window, _embedding));
     addSeparator();
     addAction(new ShowPreferencesAction(window));
   }
