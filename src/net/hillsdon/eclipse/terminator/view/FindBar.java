@@ -40,6 +40,7 @@ public class FindBar {
   
   private final Finder _finder;
   
+  private TerminatorEmbedding _terminatorEmbedding;
   private Text _text;
   private Composite _parent;
   private GridData _layoutData;
@@ -47,6 +48,7 @@ public class FindBar {
   private ToolBar _toolbar;
   private Timer _textModifiedTimer;
   private String _textFieldContents;
+
 
   public FindBar(final Finder finder) {
     _finder = finder;
@@ -58,7 +60,8 @@ public class FindBar {
     _textModifiedTimer.setRepeats(false);
   }
 
-  public void install(final Composite parent) {
+  public void install(final TerminatorEmbedding terminatorEmbedding, final Composite parent) {
+    _terminatorEmbedding = terminatorEmbedding;
     _parent = parent;
     _toolbar = new ToolBar(parent, SWT.FLAT | SWT.HORIZONTAL | SWT.RIGHT);
     _layoutData = new GridData(SWT.FILL, SWT.BOTTOM, true, false, 2, 1);
@@ -156,6 +159,7 @@ public class FindBar {
     if (_layoutData.exclude) {
       _textModifiedTimer.stop();
       _text.setText("");
+      _terminatorEmbedding.setFocus();
       find();
     }
     else {

@@ -102,7 +102,7 @@ public class TerminatorEmbedding {
     frame.add(panel, BorderLayout.CENTER);
     panel.add(_terminalPane);
     
-    _findBar.install(parent);
+    _findBar.install(this, parent);
     
     _terminalPane.start(_host);
 
