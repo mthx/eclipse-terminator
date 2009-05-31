@@ -20,17 +20,29 @@ public class Finder {
 
   private final EventThreads _eventThreads;
   private final JTerminalPane _terminalPane;
+  private String _currentRegularExpression = "";
 
   public Finder(final EventThreads eventThreads, final JTerminalPane terminalPane) {
     _eventThreads = eventThreads;
     _terminalPane = terminalPane;
   }
   
-  public void find(final String regularExpression, final FindCallback callback) throws PatternSyntaxException {
+  public void find(String regularExpression, final FindCallback callback) throws PatternSyntaxException {
+    if (regularExpression == null) {
+      regularExpression = "";
+    }
+    if (_currentRegularExpression.equals(regularExpression)) {
+      return;
+    }
+    _currentRegularExpression = regularExpression;
     final Pattern pattern = createPattern(regularExpression);
     if (pattern == null) {
       callback.statusChanged("");
     }
+    doFind(regularExpression, callback, pattern);
+  }
+
+  private void doFind(final String regularExpression, final FindCallback callback, final Pattern pattern) {
     _eventThreads.runSwingFromSWT(new Runnable() {
       public void run() {
         final TerminalView terminalView = _terminalPane.getTerminalView();

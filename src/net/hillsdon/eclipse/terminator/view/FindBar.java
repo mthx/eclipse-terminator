@@ -1,6 +1,10 @@
 package net.hillsdon.eclipse.terminator.view;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.regex.PatternSyntaxException;
+
+import javax.swing.Timer;
 
 import net.hillsdon.eclipse.terminator.TerminatorPlugin;
 import net.hillsdon.eclipse.terminator.view.actions.FindNextAction;
@@ -12,6 +16,8 @@ import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.KeyAdapter;
 import org.eclipse.swt.events.KeyEvent;
+import org.eclipse.swt.events.ModifyEvent;
+import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
@@ -38,11 +44,18 @@ public class FindBar {
   private Composite _parent;
   private GridData _layoutData;
   private ToolItem _statusLabel;
-
   private ToolBar _toolbar;
+  private Timer _textModifiedTimer;
+  private String _textFieldContents;
 
   public FindBar(final Finder finder) {
     _finder = finder;
+    _textModifiedTimer = new Timer(500, new ActionListener() {
+      public void actionPerformed(ActionEvent e) {
+        find();
+      }
+    });
+    _textModifiedTimer.setRepeats(false);
   }
 
   public void install(final Composite parent) {
@@ -68,6 +81,12 @@ public class FindBar {
     _text.addSelectionListener(new SelectionAdapter() {
       public void widgetDefaultSelected(final SelectionEvent e) {
         find();
+      }
+    });
+    _text.addModifyListener(new ModifyListener() {
+      public void modifyText(ModifyEvent e) {
+        _textFieldContents = _text.getText();
+        _textModifiedTimer.restart();
       }
     });
     _text.addKeyListener(new KeyAdapter() {
@@ -117,29 +136,39 @@ public class FindBar {
   }
 
   private void find() {
-    final String regularExpression = _text.getText();
-    try {
-      _finder.find(regularExpression, new FindCallback() {
-        public void statusChanged(final String text) {
-          setStatus(text);
-        }
-      });
-    }
-    catch (PatternSyntaxException ex) {
-      setStatus(ex.getDescription());
+    // We're called from a Timer.
+    if (!_parent.isDisposed()) {
+      try {
+        _finder.find(_textFieldContents, new FindCallback() {
+          public void statusChanged(final String text) {
+            setStatus(text);
+          }
+        });
+      }
+      catch (PatternSyntaxException ex) {
+        setStatus(ex.getDescription());
+      }
     }
   }
 
   public void toggle() {
     _layoutData.exclude = !_layoutData.exclude;
     if (_layoutData.exclude) {
+      _textModifiedTimer.stop();
       _text.setText("");
       find();
     }
     else {
       _text.setFocus();
+      _textModifiedTimer.start();
     }
     _parent.layout();
+  }
+
+  public void dispose() {
+    if (_textModifiedTimer.isRunning()) {
+      _textModifiedTimer.stop();
+    }
   }
   
 }

@@ -206,6 +206,7 @@ public class TerminatorEmbedding {
   }
   
   public void dispose() {
+    _findBar.dispose();
     _preferences.removePreferencesListener(_preferencesListener);
     _eventThreads.runSwingFromSWT(new Runnable() {
       public void run() {
