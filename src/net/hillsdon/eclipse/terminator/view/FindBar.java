@@ -50,11 +50,15 @@ public class FindBar {
   private String _textFieldContents;
 
 
-  public FindBar(final Finder finder) {
+  public FindBar(final Finder finder, final EventThreads eventThreads) {
     _finder = finder;
     _textModifiedTimer = new Timer(500, new ActionListener() {
       public void actionPerformed(ActionEvent e) {
-        find();
+        eventThreads.runSWTFromSwing(new Runnable() {
+          public void run() {
+            find();
+          }
+        });
       }
     });
     _textModifiedTimer.setRepeats(false);

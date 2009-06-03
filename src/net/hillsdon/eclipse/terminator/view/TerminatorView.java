@@ -56,7 +56,7 @@ public class TerminatorView extends ViewPart {
     final JTerminalPane terminalPane = JTerminalPane.newShellWithName(null, _initialWorkingDirectory);
     final EventThreads eventThreads = new EventThreads(parent, terminalPane);
     final ViewTerminatorHost host = new ViewTerminatorHost(this, eventThreads);
-    final FindBar findBar = new FindBar(new Finder(eventThreads, terminalPane));
+    final FindBar findBar = new FindBar(new Finder(eventThreads, terminalPane), eventThreads);
     _embedding = new TerminatorEmbedding(terminalPane, host, preferences, eventThreads, findBar);
     _embedding.install(parent);
     
