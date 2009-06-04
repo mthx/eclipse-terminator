@@ -1,10 +1,10 @@
 package net.hillsdon.eclipse.terminator.view.actions;
 
+import net.hillsdon.eclipse.terminator.TerminatorPlugin;
 import net.hillsdon.eclipse.terminator.view.Finder;
 
 import org.eclipse.jface.action.Action;
-import org.eclipse.ui.ISharedImages;
-import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.plugin.AbstractUIPlugin;
 
 /**
  * 
@@ -20,7 +20,7 @@ public class FindPreviousAction extends Action {
     _finder = finder;
     setText("Previous");
     setActionDefinitionId(ID);
-    setImageDescriptor(PlatformUI.getWorkbench().getSharedImages().getImageDescriptor(ISharedImages.IMG_TOOL_BACK));
+    setImageDescriptor(AbstractUIPlugin.imageDescriptorFromPlugin(TerminatorPlugin.ID, "/icons/find_previous.png"));
   }
 
   @Override
