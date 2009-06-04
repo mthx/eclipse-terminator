@@ -24,11 +24,11 @@ There's probably a whole load of things I've not thought of yet but here goes.
 
 == Other
 - Make salma-hayek logging log to Eclipse error log.
-- Activity monitor - italic table title as for JUnit?
+- Activity monitor - italic table title as for JUnit?  No proper Eclipse API, there's internal 
+  code used by job service.  Could change the view icon though.  An overlay?  See TestRunnerViewPart.
 - Fonts: the default 'logical' font 'Monospaced' isn't actually in the font
   dialog.  The actual(?) Linux font 'Monospace' (note no 'd') doesn't seem to
   display as fixed width.
-- Add support for Find - consider Firefox style.
 - GTK LAF hits this: https://bugs.launchpad.net/ubuntu/+source/libxcb/+bug/87947
    - Enable for other platforms?  Enable when fix can be detected?
    - Only real impact is that scrollbars look out of place.
@@ -43,6 +43,8 @@ There's probably a whole load of things I've not thought of yet but here goes.
 - Command-as-editor (e.g. vim).  Hard to fit with the editor lifecycle though.
 - Foreground background color munging as in gnome-terminal, e.g. makes white
   on white viewable by darkening the foreground.
-- Consider limiting the scrollback.
+- Consider limiting the scrollback.  konsole has all/none/limit.
 - Occasional focus issue?
 - Occasional middle click select failure?
+- Log, and expose log as bash script with env. var, so can do `tlog 1` to get at lines
+  of output.  Or some other way, maybe using the clipboard.
