@@ -47,3 +47,9 @@ There's probably a whole load of things I've not thought of yet but here goes.
 - Occasional middle click select failure?
 - Log, and expose log as bash script with env. var, so can do `tlog 1` to get at lines
   of output.  Or some other way, maybe using the clipboard.
+- Infinite loop in findAgain when hitting next in some cases.  State:
+    startLine   7   
+    endLine 6   
+    direction   1   
+  That starting situation is never going to end well.
+
