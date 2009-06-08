@@ -24,7 +24,6 @@ There's probably a whole load of things I've not thought of yet but here goes.
     Shell works but is ugly.  We use the view drop-down instead.  Should do this
     only on Linux if it works on other platforms (but everything else is broken
     elsewhere right now).
-
 - Fonts: the default 'logical' font 'Monospaced' isn't actually in the font
   dialog.  The actual(?) Linux font 'Monospace' (note no 'd') doesn't seem to
   display as fixed width.
@@ -47,11 +46,4 @@ There's probably a whole load of things I've not thought of yet but here goes.
 - Occasional middle click select failure?
 - Log, and expose log as bash script with env. var, so can do `tlog 1` to get at lines
   of output.  Or some other way, maybe using the clipboard.
-- Infinite loop in findAgain when hitting next in some cases.  State:
-    startLine   7   
-    endLine 6   
-    direction   1   
-  That starting situation is never going to end well.
-  Suggests the last visible line was one larger than the model's line count, which presumably
-  shouldn't be able to happen.
 
