@@ -30,11 +30,19 @@ public class Finder {
   }
 
   public void findPrevious() {
-    _terminalPane.getTerminalView().findPrevious(FindHighlighter.class);
+    _eventThreads.runSwingFromSWT(new Runnable() {
+      public void run() {
+        _terminalPane.getTerminalView().findPrevious(FindHighlighter.class);
+      }
+    });
   }
 
   public void findNext() {
-    _terminalPane.getTerminalView().findNext(FindHighlighter.class);
+    _eventThreads.runSwingFromSWT(new Runnable() {
+      public void run() {
+        _terminalPane.getTerminalView().findNext(FindHighlighter.class);
+      }
+    });
   }
 
 }
