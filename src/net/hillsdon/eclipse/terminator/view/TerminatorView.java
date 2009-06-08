@@ -21,10 +21,8 @@ import org.eclipse.jface.commands.ActionHandler;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IMemento;
 import org.eclipse.ui.IViewSite;
-import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PartInitException;
-import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.handlers.IHandlerService;
 import org.eclipse.ui.part.ViewPart;
 
@@ -75,8 +73,7 @@ public class TerminatorView extends ViewPart {
       public void stateChanged(javax.swing.event.ChangeEvent e) {
         eventThreads.runSWTFromSwing(new Runnable() {
           public void run() {
-            final IWorkbenchPart activePart = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getActivePart();
-            if (activePart != TerminatorView.this) {
+            if (!parent.isVisible()) {
               setActivityIndicator(true);
             }
           }
