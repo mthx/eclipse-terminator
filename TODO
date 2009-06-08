@@ -52,4 +52,6 @@ There's probably a whole load of things I've not thought of yet but here goes.
     endLine 6   
     direction   1   
   That starting situation is never going to end well.
+  Suggests the last visible line was one larger than the model's line count, which presumably
+  shouldn't be able to happen.
 
