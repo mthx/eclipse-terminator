@@ -24,8 +24,13 @@ There's probably a whole load of things I've not thought of yet but here goes.
 
 == Other
 - Make salma-hayek logging log to Eclipse error log.
-- Activity monitor - italic table title as for JUnit?  No proper Eclipse API, there's internal 
-  code used by job service.  Could change the view icon though.  An overlay?  See TestRunnerViewPart.
+- Activity monitor:
+  - Replace italic hackery with
+    > WorkbenchSiteProgressService service = (IWorkbenchSiteProgressService) part.getSite().getAdapter(IWorkbenchSiteProgressService.class);
+    > if (service != null) {
+    >   service.warnOfContentChange();
+    > }
+    as used in the Eclipse console view.
 - Fonts: the default 'logical' font 'Monospaced' isn't actually in the font
   dialog.  The actual(?) Linux font 'Monospace' (note no 'd') doesn't seem to
   display as fixed width.
