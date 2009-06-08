@@ -25,6 +25,7 @@ import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.handlers.IHandlerService;
 import org.eclipse.ui.part.ViewPart;
+import org.eclipse.ui.progress.IWorkbenchSiteProgressService;
 
 import terminator.Terminator;
 import terminator.TerminatorPreferences;
@@ -73,8 +74,9 @@ public class TerminatorView extends ViewPart {
       public void stateChanged(javax.swing.event.ChangeEvent e) {
         eventThreads.runSWTFromSwing(new Runnable() {
           public void run() {
-            if (!parent.isVisible()) {
-              setActivityIndicator(true);
+            IWorkbenchSiteProgressService service = (IWorkbenchSiteProgressService) getSite().getAdapter(IWorkbenchSiteProgressService.class);
+            if (service != null) {
+              service.warnOfContentChange();
             }
           }
         });
@@ -82,19 +84,6 @@ public class TerminatorView extends ViewPart {
     });
   }
 
-  private void setActivityIndicator(final boolean enabled) {
-    // There's no Eclipse API for this.  We use reflection because silently
-    // stopping working is better here than exploding every time something
-    // happens.
-    try {
-      IViewSite viewSite = getViewSite();
-      Object pane = viewSite.getClass().getMethod("getPane").invoke(viewSite);
-      pane.getClass().getMethod("setBusy", boolean.class).invoke(pane, enabled);
-    }
-    catch (Throwable ignore) {
-    }
-  }
-  
   @Override
   public void init(final IViewSite site, final IMemento memento) throws PartInitException {
     super.init(site, memento);
@@ -145,7 +134,6 @@ public class TerminatorView extends ViewPart {
   }
 
   public void setFocus() {
-    setActivityIndicator(false);
     _embedding.setFocus();
   }
  
