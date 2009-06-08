@@ -6,6 +6,8 @@ import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.util.UUID;
 
+import javax.swing.event.ChangeListener;
+
 import net.hillsdon.eclipse.terminator.view.actions.ClearScrollbackAction;
 import net.hillsdon.eclipse.terminator.view.actions.CopyAction;
 import net.hillsdon.eclipse.terminator.view.actions.PasteAction;
@@ -19,8 +21,10 @@ import org.eclipse.jface.commands.ActionHandler;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IMemento;
 import org.eclipse.ui.IViewSite;
+import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PartInitException;
+import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.handlers.IHandlerService;
 import org.eclipse.ui.part.ViewPart;
 
@@ -66,6 +70,32 @@ public class TerminatorView extends ViewPart {
     addAction(new ToggleFindBarAction(window, _embedding));
     addSeparator();
     addAction(new ShowPreferencesAction(window));
+    
+    terminalPane.getControl().addChangeListener(new ChangeListener() {
+      public void stateChanged(javax.swing.event.ChangeEvent e) {
+        eventThreads.runSWTFromSwing(new Runnable() {
+          public void run() {
+            final IWorkbenchPart activePart = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getActivePart();
+            if (activePart != TerminatorView.this) {
+              setActivityIndicator(true);
+            }
+          }
+        });
+      };
+    });
+  }
+
+  private void setActivityIndicator(final boolean enabled) {
+    // There's no Eclipse API for this.  We use reflection because silently
+    // stopping working is better here than exploding every time something
+    // happens.
+    try {
+      IViewSite viewSite = getViewSite();
+      Object pane = viewSite.getClass().getMethod("getPane").invoke(viewSite);
+      pane.getClass().getMethod("setBusy", boolean.class).invoke(pane, enabled);
+    }
+    catch (Throwable ignore) {
+    }
   }
   
   @Override
@@ -118,6 +148,7 @@ public class TerminatorView extends ViewPart {
   }
 
   public void setFocus() {
+    setActivityIndicator(false);
     _embedding.setFocus();
   }
  

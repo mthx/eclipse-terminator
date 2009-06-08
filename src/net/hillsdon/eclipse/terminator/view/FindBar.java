@@ -2,7 +2,6 @@ package net.hillsdon.eclipse.terminator.view;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.regex.PatternSyntaxException;
 
 import javax.swing.Timer;
 
@@ -29,6 +28,8 @@ import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.swt.widgets.ToolItem;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 
+import terminator.view.highlight.FindStatusDisplay;
+
 /**
  * Firefox-style search bar.
  * 
@@ -39,6 +40,15 @@ public class FindBar {
   private static final ImageDescriptor CANCEL_IMAGE_DESCRIPTOR = AbstractUIPlugin.imageDescriptorFromPlugin(TerminatorPlugin.ID, "/icons/find_cancel.png");
   
   private final Finder _finder;
+  private final EventThreads _eventThreads;
+  /**
+   * Called from Swing thread.
+   */
+  private final FindStatusDisplay _findStatusDisplay = new FindStatusDisplay() {
+    public void setStatus(final String text, final boolean isError) {
+      setStatusFromSwing(text);
+    }
+  };
   
   private TerminatorEmbedding _terminatorEmbedding;
   private Text _text;
@@ -47,11 +57,11 @@ public class FindBar {
   private ToolItem _statusLabel;
   private ToolBar _toolbar;
   private Timer _textModifiedTimer;
-  private String _textFieldContents;
-
+  private String _textFieldContents = "";
 
   public FindBar(final Finder finder, final EventThreads eventThreads) {
     _finder = finder;
+    _eventThreads = eventThreads;
     _textModifiedTimer = new Timer(500, new ActionListener() {
       public void actionPerformed(ActionEvent e) {
         eventThreads.runSWTFromSwing(new Runnable() {
@@ -111,11 +121,16 @@ public class FindBar {
     _statusLabel = createLabel(_toolbar, "", 25);
   }
 
-  private void setStatus(final String text) {
-    if (!_statusLabel.isDisposed()) {
-      ((Label) ((Composite) _statusLabel.getControl()).getChildren()[0]).setText(text);
-      sizeToControlWidth(_statusLabel);
-    }
+  private void setStatusFromSwing(final String text) {
+    _eventThreads.runSWTFromSwing(new Runnable() {
+      public void run() {
+        if (!_statusLabel.isDisposed()) {
+          // Ick.  The text doesn't line up anyway so fix this properly!
+          ((Label) ((Composite) _statusLabel.getControl()).getChildren()[0]).setText(text);
+          sizeToControlWidth(_statusLabel);
+        }
+      }
+    });
   }
   
   private ToolItem createLabel(final ToolBar toolbar, final String text, final int marginLeft) {
@@ -145,16 +160,7 @@ public class FindBar {
   private void find() {
     // We're called from a Timer.
     if (!_parent.isDisposed()) {
-      try {
-        _finder.find(_textFieldContents, new FindCallback() {
-          public void statusChanged(final String text) {
-            setStatus(text);
-          }
-        });
-      }
-      catch (PatternSyntaxException ex) {
-        setStatus(ex.getDescription());
-      }
+      _finder.find(_textFieldContents, _findStatusDisplay);
     }
   }
 
