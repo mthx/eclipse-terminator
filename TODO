@@ -1,19 +1,13 @@
 There's probably a whole load of things I've not thought of yet but here goes.
 
 == Short-term todos
-- Eclipse based context menu 
-    This seems unreasonably difficult: it doesn't show over Swing component
-    on Linux and I can't seem to work around it.  A different Shell works but
-    is ugly.  We use the view drop-down instead.  Should do this only on
-    Linux if it works on other platforms.
 
 == Blocking Linux release
 - Starred short-term todos.
 - Ask whether using the Terminator name and icon is reasonable.
 
 == Blocking Mac OS/Windows release
-- Binaries (now sucked out of their installers)
-- OSX Bundle-NativeCode lines + testing.
+- OSX Bundle-NativeCode testing.
 - Ability to load Windows binary - dependency issue - cygwin?  Can't seem to load that directly.  What do jessies do?
 - Error when no SHELL env. varible set (obv. only likely on Windows)
     java.lang.NullPointerException
@@ -24,13 +18,13 @@ There's probably a whole load of things I've not thought of yet but here goes.
 
 == Other
 - Make salma-hayek logging log to Eclipse error log.
-- Activity monitor:
-  - Replace italic hackery with
-    > WorkbenchSiteProgressService service = (IWorkbenchSiteProgressService) part.getSite().getAdapter(IWorkbenchSiteProgressService.class);
-    > if (service != null) {
-    >   service.warnOfContentChange();
-    > }
-    as used in the Eclipse console view.
+- Eclipse based context menu 
+    This seems unreasonably difficult: it doesn't show over Swing component
+    on Linux and I can't seem to work around it.  Given up for now.  A different
+    Shell works but is ugly.  We use the view drop-down instead.  Should do this
+    only on Linux if it works on other platforms (but everything else is broken
+    elsewhere right now).
+
 - Fonts: the default 'logical' font 'Monospaced' isn't actually in the font
   dialog.  The actual(?) Linux font 'Monospace' (note no 'd') doesn't seem to
   display as fixed width.
