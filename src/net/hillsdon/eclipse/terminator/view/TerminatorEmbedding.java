@@ -196,7 +196,8 @@ public class TerminatorEmbedding {
   public void dispose() {
     _findBar.dispose();
     _preferences.removePreferencesListener(_preferencesListener);
-    _eventThreads.runSwingFromSWT(new Runnable() {
+    // Always run this, even though the UI is already gone.
+    _eventThreads.runSwingFromSWT(true, new Runnable() {
       public void run() {
         _terminalPane.doCloseAction();
       }

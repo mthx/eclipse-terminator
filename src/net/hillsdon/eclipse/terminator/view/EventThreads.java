@@ -9,6 +9,9 @@ import org.eclipse.swt.widgets.Widget;
 /**
  * Async. dispatch between Swing and SWT with guards to abort late event handling.
  * 
+ * Normally async calls with guard failure are ignored though Swing calls can be
+ * forced if they don't require the terminal pane to be showing. 
+ * 
  * @author mth
  */
 public class EventThreads {
@@ -32,11 +35,15 @@ public class EventThreads {
       }
     });
   }
-  
+
   public void runSwingFromSWT(final Runnable runnable) {
+    runSwingFromSWT(false, runnable);
+  }
+  
+  public void runSwingFromSWT(final boolean force, final Runnable runnable) {
     EventQueue.invokeLater(new Runnable() {
       public void run() {
-        if (_component.isShowing()) {
+        if (force || _component.isShowing()) {
           runnable.run();
         }
       }
