@@ -1,6 +1,8 @@
 There's probably a whole load of things I've not thought of yet but here goes.
 
 == Short-term todos
+- [*] Automate the build, update site, the whole lot.  Record revision numbers and
+  bundle source for everything.
 
 == Blocking Linux release
 - Starred short-term todos.
