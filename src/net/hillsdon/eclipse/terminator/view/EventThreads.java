@@ -36,7 +36,7 @@ public class EventThreads {
   public void runSwingFromSWT(final Runnable runnable) {
     EventQueue.invokeLater(new Runnable() {
       public void run() {
-        if (_component.isShowing() /* Correct check? */) {
+        if (_component.isShowing()) {
           runnable.run();
         }
       }
