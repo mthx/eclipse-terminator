@@ -11,6 +11,7 @@ import net.hillsdon.eclipse.terminator.view.actions.FindPreviousAction;
 
 import org.eclipse.jface.action.ActionContributionItem;
 import org.eclipse.jface.action.IAction;
+import org.eclipse.jface.commands.ActionHandler;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.KeyAdapter;
@@ -26,6 +27,7 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.swt.widgets.ToolItem;
+import org.eclipse.ui.handlers.IHandlerService;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 
 import terminator.view.highlight.FindStatusDisplay;
@@ -50,6 +52,7 @@ public class FindBar {
     }
   };
   
+  private final IHandlerService _handlerService;
   private TerminatorEmbedding _terminatorEmbedding;
   private Text _text;
   private Composite _parent;
@@ -59,9 +62,10 @@ public class FindBar {
   private Timer _textModifiedTimer;
   private String _textFieldContents = "";
 
-  public FindBar(final Finder finder, final EventThreads eventThreads) {
+  public FindBar(final Finder finder, final EventThreads eventThreads, final IHandlerService handlerService) {
     _finder = finder;
     _eventThreads = eventThreads;
+    _handlerService = handlerService;
     _textModifiedTimer = new Timer(500, new ActionListener() {
       public void actionPerformed(ActionEvent e) {
         eventThreads.runSWTFromSwing(new Runnable() {
@@ -155,6 +159,7 @@ public class FindBar {
     ActionContributionItem contribution = new ActionContributionItem(action);
     contribution.setMode(ActionContributionItem.MODE_FORCE_TEXT);
     contribution.fill(toolbar, SWT.DEFAULT);
+    _handlerService.activateHandler(action.getActionDefinitionId(), new ActionHandler(action));
   }
 
   private void find() {

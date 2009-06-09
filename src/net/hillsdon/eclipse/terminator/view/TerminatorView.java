@@ -55,20 +55,21 @@ public class TerminatorView extends ViewPart {
    
   public void createPartControl(final Composite parent) {
     final IWorkbenchWindow window = getViewSite().getWorkbenchWindow();
+    final IHandlerService handlerService = (IHandlerService) getViewSite().getService(IHandlerService.class);
     final TerminatorPreferences preferences = Terminator.getPreferences();
     final JTerminalPane terminalPane = JTerminalPane.newShellWithName(null, _initialWorkingDirectory);
     final EventThreads eventThreads = new EventThreads(parent, terminalPane);
     final ViewTerminatorHost host = new ViewTerminatorHost(this, eventThreads);
-    final FindBar findBar = new FindBar(new Finder(eventThreads, terminalPane), eventThreads);
+    final FindBar findBar = new FindBar(new Finder(eventThreads, terminalPane), eventThreads, handlerService);
     _embedding = new TerminatorEmbedding(terminalPane, host, preferences, eventThreads, findBar);
     _embedding.install(parent);
     
-    addAction(new CopyAction(window, _embedding));
-    addAction(new PasteAction(window, _embedding));
-    addAction(new ClearScrollbackAction(window, _embedding));
-    addAction(new ToggleFindBarAction(window, _embedding));
+    addAction(new CopyAction(window, _embedding), handlerService);
+    addAction(new PasteAction(window, _embedding), handlerService);
+    addAction(new ClearScrollbackAction(window, _embedding), handlerService);
+    addAction(new ToggleFindBarAction(window, _embedding), handlerService);
     addSeparator();
-    addAction(new ShowPreferencesAction(window));
+    addAction(new ShowPreferencesAction(window), handlerService);
     
     terminalPane.getControl().addChangeListener(new ChangeListener() {
       public void stateChanged(javax.swing.event.ChangeEvent e) {
@@ -114,10 +115,9 @@ public class TerminatorView extends ViewPart {
    * We want a context menu rather than the view menu but I can't figure out how
    * to get it to display over the Swing area on Linux (apparently it works on Windows). 
    */
-  private void addAction(final IAction action) {
+  private void addAction(final IAction action, IHandlerService handlerService) {
     getMenuManager().add(action);
-    IHandlerService service = (IHandlerService) getViewSite().getService(IHandlerService.class);
-    service.activateHandler(action.getActionDefinitionId(), new ActionHandler(action));
+    handlerService.activateHandler(action.getActionDefinitionId(), new ActionHandler(action));
   }
 
   private void addSeparator() {

@@ -38,6 +38,18 @@
             categoryId="net.hillsdon.eclipse.terminator.category"
             name="Find"
             id="net.hillsdon.eclipse.terminator.toggleFindBar"/>
+      <command
+            categoryId="net.hillsdon.eclipse.terminator.category"
+            name="Find Previous"
+            id="net.hillsdon.eclipse.terminator.findPrevious"/>
+      <command
+            categoryId="net.hillsdon.eclipse.terminator.category"
+            name="Find Next"
+            id="net.hillsdon.eclipse.terminator.findNext"/>
+      <command
+            categoryId="net.hillsdon.eclipse.terminator.category"
+            name="Preferences"
+            id="net.hillsdon.eclipse.terminator.showPreferences"/>
    </extension>
    <extension
          point="org.eclipse.ui.bindings">
@@ -55,12 +67,20 @@
                commandId="net.hillsdon.eclipse.terminator.edit.paste"/>
          <key
                schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
-               sequence="M1+Shift+K"
+               sequence="M1+Shift+L"
                commandId="net.hillsdon.eclipse.terminator.edit.clearScrollback"/>
          <key
                schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
                sequence="M1+Shift+F"
                commandId="net.hillsdon.eclipse.terminator.toggleFindBar"/>
+         <key
+               schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+               sequence="M1+Shift+J"
+               commandId="net.hillsdon.eclipse.terminator.findPrevious"/>
+         <key
+               schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+               sequence="M1+Shift+K"
+               commandId="net.hillsdon.eclipse.terminator.findNext"/>
    </extension>
    <extension
          point="org.eclipse.ui.actionSets">
