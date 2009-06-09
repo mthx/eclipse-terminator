@@ -32,3 +32,17 @@ Specific applications:
   * irssi white-on-white: use one of http://irssi.org/themes e.g. foxmask.
   * vim see :colorscheme <tab> and :set background=light
 
+3. Some key bindings I want to go to the terminal are used by Eclipse.
+
+If your terminal based application uses a lot of Eclipse's keybindings
+you might be better off running it with an external terminal.
+
+Sometimes you can improve things by removing or changing the Eclipse bindings.
+These can be edited in Preferences, General/Keys.
+
+Specific applications:
+  * vim - Ctrl-W is bound to close editors in Eclipse leaving vim split windows
+    pretty much unusable.  Consider changing the 'When' part of the keybinding
+    to the narrower 'Editing Text' setting so it doesn't close an editor when
+    a view is focused.
+
