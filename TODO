@@ -40,8 +40,10 @@ There's probably a whole load of things I've not thought of yet but here goes.
 - Foreground background color munging as in gnome-terminal, e.g. makes white
   on white viewable by darkening the foreground.
 - Consider limiting the scrollback.  konsole has all/none/limit.
-- Occasional focus issue?
+- Occasional focus issue - example: Window->Preferences, Cancel - which doesn't affect
+  other views.
 - Occasional middle click select failure?
 - Log, and expose log as bash script with env. var, so can do `tlog 1` to get at lines
   of output.  Or some other way, maybe using the clipboard.
+- Flicker on open/close of find bar and switching between terminal views.
 
