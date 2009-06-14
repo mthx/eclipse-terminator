@@ -124,7 +124,7 @@
             class="net.hillsdon.eclipse.terminator.perspectives.TerminatorPerspective"
             icon="icons/terminator-16.png"
             id="net.hillsdon.eclipse.terminator.perspectives.TerminatorPerspective"
-            name="Terminator Perspective">
+            name="Terminals">
       </perspective>
    </extension>
 
