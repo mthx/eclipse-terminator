@@ -6,12 +6,15 @@ export PATH=$JAVA_HOME/bin:"$PATH"
 OUTPUT=`pwd`
 
 for dir in "../salma-hayek" "../terminator";
-do 
+do
   make -C "$dir"
-  MANIFEST="`pwd`/$dir/tmpManifest"
+  MANIFEST="`pwd`/tmpManifest"
   echo "Implementation-Version: `svnversion $dir`" > $MANIFEST
   pushd "$dir/.generated/classes"
   jar cfm "$OUTPUT/lib/`basename $dir`.jar" $MANIFEST *
+  popd
+  pushd "$dir/"
+  jar cfm "$OUTPUT/lib/`basename $dir`-src.jar" $MANIFEST *
   popd
   if [[ -d $dir/lib/jars ]]; then
     cp $dir/lib/jars/* "$OUTPUT/lib/"
