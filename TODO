@@ -34,7 +34,7 @@ There's probably a whole load of things I've not thought of yet but here goes.
 - If using as fast view (?) then restore doesn't redraw.
 - Maximise loses focus from terminal.
 - Partial text at the top - see Stuart Bell's suggestion in terminator TODO.
-- Stacktrace in log on close.
+- Stacktrace in log on close.  This is not Eclipse specific.
 - Command-as-editor (e.g. vim).  Hard to fit with the editor lifecycle though.
 - Foreground background color munging as in gnome-terminal, e.g. makes white
   on white viewable by darkening the foreground.
