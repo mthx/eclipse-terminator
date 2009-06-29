@@ -19,7 +19,6 @@ There's probably a whole load of things I've not thought of yet but here goes.
       at net.hillsdon.eclipse.terminator.view.TerminatorView.createPartControl(TerminatorView.java:53)
 
 == Other
-- Make salma-hayek logging log to Eclipse error log.
 - Eclipse based context menu 
     This seems unreasonably difficult: it doesn't show over Swing component
     on Linux and I can't seem to work around it.  Given up for now.  A different
