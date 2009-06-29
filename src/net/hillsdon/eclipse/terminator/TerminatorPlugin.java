@@ -65,12 +65,10 @@ public class TerminatorPlugin extends AbstractUIPlugin {
   }
   
   private void initializeLogging() {
-    // Ideally we'd redirect this logging to the Eclipse error log - need to 
-    // give the logging system in salma-hayek pluggable backends.
-    System.setProperty("e.util.Log.filename", OS.isWindows() ? "nul" : "/dev/null");
     // This logs all terminal output.  I'm not happy enabling this without UI
     // that makes it really obvious what's going on, so disable for now.
     System.setProperty("org.jessies.terminator.logDirectory", "");
+    System.setProperty("e.util.Log.logSink", PluginLogWriter.class.getName());
   }
   
   private void initializeSignalMap() {
