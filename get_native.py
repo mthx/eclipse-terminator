@@ -66,8 +66,8 @@ if __name__ == "__main__":
     for url in [WINDOWS_X86_URL, LINUX_X86_URL, LINUX_AMD64_URL, OSX_URL]:
         url2file(url)
 
-    extract_windows(os.path.join(DATA_DIRECTORY, "terminator.msi"), WINDOWS_X86_OUT)
+    #extract_windows(os.path.join(DATA_DIRECTORY, "terminator.msi"), WINDOWS_X86_OUT)
     extract_linux(os.path.join(DATA_DIRECTORY, "org.jessies.terminator.i386.deb"), LINUX_X86_OUT)
     extract_linux(os.path.join(DATA_DIRECTORY, "org.jessies.terminator.amd64.deb"), LINUX_AMD64_OUT)
-    extract_osx(os.path.join(DATA_DIRECTORY, "terminator.dmg"), OSX_OUT)
+    #extract_osx(os.path.join(DATA_DIRECTORY, "terminator.dmg"), OSX_OUT)
 
