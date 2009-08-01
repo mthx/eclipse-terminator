@@ -68,7 +68,7 @@ public class TerminatorPlugin extends AbstractUIPlugin {
     // This logs all terminal output.  I'm not happy enabling this without UI
     // that makes it really obvious what's going on, so disable for now.
     System.setProperty("org.jessies.terminator.logDirectory", "");
-    System.setProperty("e.util.Log.logSink", PluginLogWriter.class.getName());
+    System.setProperty("e.util.Log.logWriter", PluginLogWriter.class.getName());
   }
   
   private void initializeSignalMap() {
